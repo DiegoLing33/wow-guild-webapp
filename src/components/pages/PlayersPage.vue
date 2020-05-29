@@ -7,17 +7,17 @@
             </div>
             <b-table :busy="busy" bordered :items="items" :fields="fields">
                 <template v-slot:cell(name)="row">
-                    <router-link :to="(`/player/${row.item.name}`)">{{row.item.name}}</router-link>
+                    <player-name :player="row.item"></player-name>
                 </template>
                 <template v-slot:cell(rank.id)="row">
-                    {{row.item.rank.name}}
+                    {{row.item.rank.title}}
                 </template>
                 <template v-slot:cell(class)="row">
-                    {{row.item.class.name}}
+                    {{row.item.class.title}}
                 </template>
                 <template v-slot:cell(spec)="row">
-                    <img class="spec-image" :src="getSpecImage(row.item.spec.id)"/>
-                    {{row.item.spec.name}}
+                    <img class="spec-image" :src="row.item.role.image"/>
+                    {{row.item.specialization.title}}
                 </template>
                 <template v-slot:cell(gear)="row">
                     {{row.item.gear}}
@@ -43,14 +43,14 @@
     import heal from "@/assets/types/health.svg";
     import sword from "@/assets/types/sword.svg";
     import bow from "@/assets/types/bow-and-arrow.svg";
-    import GameData from "@/data/GameData";
     import PlayersTableFilter from "@/components/PlayersTableFilter";
     import MythicUtils from "@/app/MythicUtils";
     import Guild from "@/app/Guild";
+    import PlayerName from "../player/PlayerName";
 
     export default {
         name:       "PlayersPage",
-        components: {PlayersTableFilter},
+        components: {PlayerName, PlayersTableFilter},
         computed:   {
             items_count() {
                 return this.items.length;
@@ -68,11 +68,10 @@
                     {key: "rank.id", label: "Ранг", sortable: true},
                     {key: "class", label: "Класс"},
                 ])
-                arr.push({key: "spec", label: "Спек", sortable: true});
                 arr.push({key: "gear", label: "ГИР", sortable: true});
 
-                if(this.filter.etc.includes("wgs")) arr.push({key: "weekGuildScore", label: "Guild Score (Week)", sortable: true});
-                else arr.push({key: "guildScore", label: "Guild Score", sortable: true});
+                if(this.filter.etc.includes("wgs")) arr.push({key: "guildScore.thisWeek", label: "Guild Score (Week)", sortable: true});
+                else arr.push({key: "guildScore.all", label: "Guild Score", sortable: true});
                 return arr;
             }
         },
@@ -80,14 +79,6 @@
             Guild.shared.wait(this.applyTable.bind(this));
         },
         methods:    {
-            getSpecImage(id) {
-                const typeId = GameData.specIdToTypeId(id);
-                if (typeId === 1) return this.images.shield;
-                if (typeId === 2) return this.images.heal;
-                if (typeId === 3) return this.images.sword;
-                if (typeId === 4) return this.images.bow;
-                return this.images.sword;
-            },
             getAllPlayers() {
                 const source = Guild.shared.getPlayersList().filter(p => !Guild.shared.isPlayerLeft(p.name));
                 return source
@@ -99,7 +90,7 @@
                 this.items = this.getAllPlayers().filter(value => {
                     if(value.left_from_guild > 0) return false;
                     if(!value.name.toLowerCase().includes(this.filter.name.toLowerCase())) return false;
-                    const specId = GameData.specIdToTypeId(value.spec.id);
+                    const specId = value.role.id;
                     if (specId === 1 && !this.filter.specs.includes("tanks")) return false;
                     if (specId === 2 && !this.filter.specs.includes("healers")) return false;
                     if (specId === 3 && !this.filter.specs.includes("mds")) return false;

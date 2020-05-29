@@ -18,6 +18,17 @@ export default class API {
     }
 
     /**
+     * Makes media request
+     *
+     * @param name
+     * @param temp
+     * @returns {Promise<{avatar_url: string, bust_url: string, render_url: string}>}
+     */
+    static async media(name, temp){
+        return await API.request("media", {name: name.toLowerCase()}, temp);
+    }
+
+    /**
      * Makes heroes request
      *
      * @param page
@@ -55,7 +66,7 @@ export default class API {
      * @param act
      * @param data
      * @param temp
-     * @returns {Promise<unknown>}
+     * @returns {Promise<*>}
      */
     static async request(act, data, temp) {
         temp = temp || true;

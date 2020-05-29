@@ -45,13 +45,13 @@
         },
         data() {
             return {
-                selectedWeek:  "guildScore",
+                selectedWeek:  "all",
                 players:       [],
                 limit:         15,
                 optionsWeek:   [
-                    {text: "Всего очков", value: "guildScore"},
-                    {text: "Текущая неделя", value: "weekGuildScore"},
-                    {text: "Прошлая неделя", value: "lastWeekGuildScore"},
+                    {text: "Всего очков", value: "all"},
+                    {text: "Текущая неделя", value: "thisWeek"},
+                    {text: "Прошлая неделя", value: "lastWeek"},
                 ],
                 playersFilter: [],
             }

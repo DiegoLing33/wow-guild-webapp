@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <navigation-bar></navigation-bar>
+        <player-modal></player-modal>
         <loader-screen ref="loader"></loader-screen>
         <div class="main-content">
             <div class="logo-content">
@@ -12,7 +13,7 @@
             <footer class="mt-3">
                 Powered and Developed by <a href="http://ling.black">Yakov Ling</a>
                 with uses of <a href="http://develop.battle.net">Battle.net</a> (BLIZZARD ENTERTAINMENT, INC) API
-                <br />
+                <br/>
                 All Rights Reserved &copy; 2020
             </footer>
         </div>
@@ -25,10 +26,13 @@
     import SubMenu from "@/components/navigation/SubMenu";
     import Guild from "@/app/Guild";
     import NavigationBar from "@/components/navigation/NavigationBar";
+    import PlayerModal from "./components/player/PlayerModal";
+    import UIPlayerOverlay from "./app/UIPlayerOverlay";
 
     export default {
-        name:       'App',
+        name: 'App',
         components: {
+            PlayerModal,
             NavigationBar,
             SubMenu,
             LoaderScreen,
@@ -41,10 +45,15 @@
             this.$refs.loader.display(false);
         },
         data() {
-            return {guild: {achievement_points: 0, players: 0, created: 0},
+            return {
+                guild: {achievement_points: 0, players: 0, created: 0},
             }
         },
-        methods:    {}
+        watch: {
+            $route() {
+                UIPlayerOverlay.hide();
+            },
+        }
     }
 </script>
 
@@ -155,12 +164,12 @@
         margin-bottom: 20px;
     }
 
-    .back-button{
+    .back-button {
         padding: 5px;
         margin: 8px;
         cursor: pointer;
 
-        background: rgb(52,52,52);
-        background: linear-gradient(0deg, rgba(52,52,52,1) 0%, rgba(28,28,28,1) 88%, rgba(37,37,37,1) 94%, rgba(18,18,18,1) 100%);
+        background: rgb(52, 52, 52);
+        background: linear-gradient(0deg, rgba(52, 52, 52, 1) 0%, rgba(28, 28, 28, 1) 88%, rgba(37, 37, 37, 1) 94%, rgba(18, 18, 18, 1) 100%);
     }
 </style>

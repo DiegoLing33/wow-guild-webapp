@@ -4,32 +4,31 @@
             <b-card no-body>
                 <div style="text-align: center; text-transform: uppercase; font-weight: 100">
                     <b-card-body>
-                        <h2><img :alt="(`${player.name} spec`)" :src="specImage" class="spec-image"/>
-                            {{player.name}}</h2>
+                        <h2><player-name :linked="false" :player="player"></player-name></h2>
                     </b-card-body>
                     <b-list-group flush>
                         <b-list-group-item>Уровень: {{player.level}}</b-list-group-item>
                         <b-list-group-item>ГИР: {{player.gear}}</b-list-group-item>
-                        <b-list-group-item>GS: {{player.guildScore}}</b-list-group-item>
+                        <b-list-group-item>GS: {{player.guildScore.all}}</b-list-group-item>
                     </b-list-group>
                 </div>
             </b-card>
             <b-card header="Информация">
                 <b-row>
                     <b-col sm="6">Расса:</b-col>
-                    <b-col sm="6"><b>{{player.race.name}}</b></b-col>
+                    <b-col sm="6"><b>{{player.race.title}}</b></b-col>
                 </b-row>
                 <b-row>
                     <b-col sm="6">Класс:</b-col>
-                    <b-col sm="6"><b>{{player.class.name}}</b></b-col>
+                    <b-col sm="6"><b>{{player.class.title}}</b></b-col>
                 </b-row>
                 <b-row>
                     <b-col sm="6">Специализация:</b-col>
-                    <b-col sm="6"><b>{{player.spec.name}}</b></b-col>
+                    <b-col sm="6"><b>{{player.specialization.title}}</b></b-col>
                 </b-row>
                 <b-row>
                     <b-col sm="6">Week Guild Score:</b-col>
-                    <b-col sm="6"><b>{{player.weekGuildScore}}</b></b-col>
+                    <b-col sm="6"><b>{{player.guildScore.thisWeek}}</b></b-col>
                 </b-row>
             </b-card>
         </b-card-group>
@@ -46,27 +45,27 @@
 </template>
 
 <script>
-    import SpecUtils from "@/app/players/SpecUtils";
-    import GameData from "@/data/GameData";
     import MythicUtils from "@/app/MythicUtils";
     import Guild from "@/app/Guild";
     import MythicCardsDeck from "@/components/mythic/MythicCardsDeck";
+    import PlayerName from "../player/PlayerName";
+    import Player from "../../app/entities/Player";
 
     export default {
         name:       "WarriorPage",
-        components: {MythicCardsDeck},
+        components: {PlayerName, MythicCardsDeck},
         props:      ["name"],
         watch:      {
-            $route() {
-                this.update();
-            },
             selectedFilters() {
                 this.filter();
             },
+            $route() {
+                this.update();
+            }
         },
         data() {
             return {
-                player:    {race: {name: ""}, class: {name: ""}, spec: {name: "", id: 106}},
+                player:    new Player({}),
                 specImage: null,
                 mythic:    [],
                 items:     [],
@@ -86,7 +85,7 @@
         methods:    {
             update() {
                 this.player    = Guild.shared.getPlayer(this.name);
-                this.specImage = SpecUtils.getImage(GameData.specIdToTypeId(this.player.spec.id));
+                this.specImage = this.player.role.image;
                 this.mythic    = MythicUtils.getSortedByLevel(MythicUtils.getUniqueTeamMythicList(Guild.shared.getMythicByName(this.player.name)));
             },
         }

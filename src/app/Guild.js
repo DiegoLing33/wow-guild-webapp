@@ -1,44 +1,35 @@
 import API from "@/app/API";
-import Player from "@/app/Player";
 import MythicUtils from "@/app/MythicUtils";
 import WoWUtils from "@/app/utils/WoWUtils";
+import Player from "./entities/Player";
 
 export default class Guild {
 
     static shared = new Guild();
 
-    guildRanks = [
-        "Лидер гильдии",
-        "Администратор",
-        "Психиатор",
-        "Менеджер",
-        "Офицер",
-        "Инвестор",
-        "Просвещенный",
-        "Мастер М+",
-        "Ителлигент",
-        "Подмастерье",
-    ]
 
     constructor(data = {}) {
         this.apply(data);
         this.players = {};
-        this.mythic  = {};
+        this.mythic = {};
     }
 
-    initPlayer(player) {
-        player.guildScore         = 0;
-        player.weekGuildScore     = 0;
-        player.lastWeekGuildScore = 0;
-        player.role               = {};
-        player.role.id            = Player.getRoleIdBySpecId(player.spec.id)
-        player.role.name          = Player.ROLES[player.role.id];
-        player.rank               = {id: player.rank, name: this.guildRanks[player.rank]};
-        return player;
-    }
-
+    /**
+     * Adds the player to guild
+     * @param {string} name
+     * @param {*} player
+     */
     setPlayer(name, player) {
-        this.players[name.toLowerCase()] = this.initPlayer(player);
+        this.players[name.toLowerCase()] = new Player(player);
+    }
+
+    /**
+     * Returns the player by name
+     * @param {string} name
+     * @return {Player}
+     */
+    getPlayer(name) {
+        return this.players[name.toLowerCase()];
     }
 
     setMythic(mythicHash, mythic) {
@@ -53,9 +44,6 @@ export default class Guild {
         this.setPlayer(player.name, player);
     }
 
-    getPlayer(name) {
-        return this.players[name.toLowerCase()];
-    }
 
     isPlayerLeft(name) {
         return this.getPlayer(name).left_from_guild > 0;
@@ -70,14 +58,32 @@ export default class Guild {
     }
 
     initMythic(mythic) {
-        const completed     = new Date(mythic.completed);
-        mythic.isGuildRace  = MythicUtils.isGuildRace(mythic);
-        mythic.thisWeek     = WoWUtils.getWeekNumber(completed)
+        const completed = new Date(mythic.completed);
+        mythic.isGuildRace = MythicUtils.isGuildRace(mythic);
+        mythic.thisWeek = WoWUtils.getWeekNumber(completed)
             === WoWUtils.getWeekNumber(new Date());
-        mythic.lastWeek     = WoWUtils.getWeekNumber(completed)
+        mythic.lastWeek = WoWUtils.getWeekNumber(completed)
             === (WoWUtils.getWeekNumber(new Date()) - 1);
         mythic.guildPlayers = mythic.members.filter(v => Guild.shared.hasPlayer(v.name));
-        mythic.guildScore   = MythicUtils.getGuildScoreForPlayer(mythic);
+        mythic.guildScore = MythicUtils.getGuildScoreForPlayer(mythic);
+
+        mythic.members = mythic.members.map(v => {
+            const player = new Player(v);
+            if(this.hasPlayer(v.name)){
+                const guildPlayer = this.getPlayer(v.name);
+                player.gear = guildPlayer.gear;
+                player.race = guildPlayer.race;
+                player.guildScore = guildPlayer.guildScore;
+                player.class.id = guildPlayer.class.id;
+                player.rank = guildPlayer.rank;
+                player.class.title = guildPlayer.class.title;
+                player.fromGuild = true;
+            }else{
+                player.gear = 0;
+                player.fromGuild = false;
+            }
+            return player;
+        });
 
         if (completed.getDay() === 3 && mythic.thisWeek && completed.getHours() < 10) {
             mythic.thisWeek = false;
@@ -95,20 +101,20 @@ export default class Guild {
     }
 
     apply(data) {
-        this.gid                    = data.gid || 0;
-        this.name                   = data.name || "Undefined";
-        this.achievement_points     = data.achievement_points || 0;
-        this.playersCount           = data.players || 0;
-        this.created                = data.created || 0;
-        this.crest_emblem           = data.crest_emblem;
+        this.gid = data.gid || 0;
+        this.name = data.name || "Undefined";
+        this.achievement_points = data.achievement_points || 0;
+        this.playersCount = data.players || 0;
+        this.created = data.created || 0;
+        this.crest_emblem = data.crest_emblem;
         this.crest_background_color = data.crest_background_color;
 
-        this.isGuildLoaded   = false;
+        this.isGuildLoaded = false;
         this.isPlayersLoaded = false;
-        this.isMythicLoaded  = false;
+        this.isMythicLoaded = false;
 
         this.guildScore = {all: 0, thisWeek: 0, lastWeek: 0};
-        this.loaded     = false;
+        this.loaded = false;
         this.wait(() => this.loaded = true);
     }
 
@@ -128,15 +134,15 @@ export default class Guild {
                 if (!this.hasPlayer(player.name)) return;
                 if (this.isPlayerLeft(player.name)) return;
 
-                this.getPlayer(player.name).guildScore += m.guildScore;
+                this.getPlayer(player.name).guildScore.all += m.guildScore;
                 this.guildScore.all += m.guildScore;
 
                 if (m.thisWeek) {
-                    this.getPlayer(player.name).weekGuildScore += m.guildScore;
+                    this.getPlayer(player.name).guildScore.thisWeek += m.guildScore;
                     this.guildScore.thisWeek += m.guildScore;
                 }
                 if (m.lastWeek) {
-                    this.getPlayer(player.name).lastWeekGuildScore += m.guildScore;
+                    this.getPlayer(player.name).guildScore.lastWeek += m.guildScore;
                     this.guildScore.lastWeek += m.guildScore;
                 }
             });
@@ -145,8 +151,8 @@ export default class Guild {
 
     getCustomRating(size, field) {
         return this.getPlayersList()
-            .sort((a, b) => a[field] > b[field] ? -1 : 1).slice(0, size).map(v => {
-                return {name: v.name, guildScore: v[field], allGuildScore: v.guildScore};
+            .sort((a, b) => a.guildScore[field] > b.guildScore[field] ? -1 : 1).slice(0, size).map(v => {
+                return {name: v.name, guildScore: v.guildScore[field], allGuildScore: v.guildScore.all, player: v};
             });
     }
 
@@ -155,11 +161,11 @@ export default class Guild {
     }
 
     getRatingWeek(size) {
-        return this.getCustomRating(size, "weekGuildScore")
+        return this.getCustomRating(size, "thisWeek")
     }
 
     getRatingLastWeek(size) {
-        return this.getCustomRating(size, "lastWeekGuildScore")
+        return this.getCustomRating(size, "lastWeek")
     }
 
     async updateGuild(callback) {
@@ -170,8 +176,8 @@ export default class Guild {
 
     async updatePlayers(callback) {
         this.players = {};
-        let pages    = 0;
-        let page     = 0;
+        let pages = 0;
+        let page = 0;
         do {
             const temp = await API.heroes(page);
             temp.items.forEach(this.addPlayer.bind(this));
@@ -184,8 +190,8 @@ export default class Guild {
 
     async updateMythic(callback) {
         this.mythic = {};
-        let pages   = 0;
-        let page    = 0;
+        let pages = 0;
+        let page = 0;
         do {
             const temp = await API.mythic(page);
             temp.items.forEach(this.addMythic.bind(this));
@@ -203,7 +209,7 @@ export default class Guild {
      * @returns {boolean}
      */
     isPlayerFormGuild(name) {
-        return Guild.shared.getPlayer(name);
+        return Guild.shared.getPlayer(name) !== undefined;
     }
 
     getMythicByName(name) {

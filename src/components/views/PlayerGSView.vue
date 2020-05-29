@@ -1,14 +1,14 @@
 <template>
     <div class="player-gs-view">
-        <div class="gs-table" @click="$router.push(`/player/${player.name}`)">
+        <div class="gs-table" @click="modal(player.player)">
             <div class="gs-cell gs-position">
                 <b>{{number}}</b>
             </div>
-            <div class="gs-cell gs-image" >
+            <div class="gs-cell gs-image">
                 <img class="spec-gs-image" :src="getSpecImage(player.name)" />
             </div>
             <div class="gs-cell gs-name" >
-                <b>{{player.name}}</b>
+                <b :class="getSpecClass(player.name)">{{player.name}}</b>
                 <div>Всего Guild Score: {{player.allGuildScore}}</div>
             </div>
             <div class="gs-cell gs-score" >
@@ -19,16 +19,22 @@
 </template>
 
 <script>
-    import SpecUtils from "@/app/players/SpecUtils";
     import Guild from "@/app/Guild";
+    import UIPlayerOverlay from "../../app/UIPlayerOverlay";
 
     export default {
         name: "PlayerGSView",
         props: ["player", "number"],
         methods: {
             getSpecImage(name) {
-                return SpecUtils.getImage(Guild.shared.getPlayer(name).role.id);
+                return Guild.shared.getPlayer(name).role.image;
             },
+            getSpecClass(name){
+                return  Guild.shared.getPlayer(name).class.slug;
+            },
+            modal(player){
+                UIPlayerOverlay.displayPlayer(player);
+            }
         }
     }
 </script>

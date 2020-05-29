@@ -4,7 +4,7 @@
             <b-card-group deck>
                 <b-card class="info-item mb-3">
                     <h2>Достижения</h2>
-                     <div class="my-3 text-muted">Очки достижений</div>
+                    <div class="my-3 text-muted">Очки достижений</div>
                     <img :src="achievement" alt="Достижения">
                     <h3>{{guild.achievement_points}}</h3>
                 </b-card>
@@ -21,7 +21,10 @@
                     <h2>MVGP</h2>
                     <div class="my-3 text-muted">Герой недели</div>
                     <img :src="medal" alt="MVGP">
-                    <h3 class="mvgp-go">{{mvgp.name}} ({{mvgp.guildScore}})</h3>
+                    <h3 class="mvgp-go">
+                        <player-name :player="mvgp" :linked="false"></player-name>
+                        ({{mvgp.guildScore.thisWeek}})
+                    </h3>
                 </b-card>
                 <b-card @click="$router.push('/players')" class="info-item mb-3 sector-item">
                     <h2>GS</h2>
@@ -47,9 +50,12 @@
     import medal from "@/assets/medal.svg";
     import rating from "@/assets/rating.svg";
     import Guild from "@/app/Guild";
+    import PlayerName from "../player/PlayerName";
+    import Player from "../../app/entities/Player";
 
     export default {
-        name:     "IndexPage",
+        name: "IndexPage",
+        components: {PlayerName},
         computed: {
             created() {
                 const date = new Date(this.guild.created);
@@ -59,7 +65,7 @@
         mounted() {
             Guild.shared.wait(() => {
                 this.guild = Guild.shared;
-                this.mvgp = Guild.shared.getRatingWeek(1)[0];
+                this.mvgp = Guild.shared.getPlayer(Guild.shared.getRatingWeek(1)[0].name);
             });
         },
         data() {
@@ -68,8 +74,8 @@
                 antique,
                 medal,
                 rating,
-                guild: {},
-                mvgp: "",
+                guild: {guildScore: {all: 0}},
+                mvgp: new Player({}),
             }
         },
 
@@ -99,12 +105,14 @@
         padding: 10px;
         font-weight: bold;
     }
-    .sector-item{
+
+    .sector-item {
         cursor: pointer;
         transition: all 0.4s;
         opacity: 1;
     }
-    .sector-item:hover{
+
+    .sector-item:hover {
         cursor: pointer;
         background-color: #434343;
         opacity: 0.4;

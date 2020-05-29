@@ -9,17 +9,7 @@
             </div>
         </div>
         <b-card-group class="mb-4" deck v-for="m in groups" :key="m.map(v=>v.id).join('_')">
-            <mythic-card
-                    v-for="item in m"
-                    :key="item.mythic_hash"
-                    :mythic_hash="item.mythic_hash"
-                    :date="item.completed"
-                    :level="item.level"
-                    :dungeon="item.dungeon_name"
-                    :duration="item.done_in_formatted"
-                    :in_time="item.done_in_time"
-                    :mythic="item"
-                    :members="item.members">
+            <mythic-card v-for="item in m" :key="item.mythic_hash" :mythic_hash="item.mythic_hash" :mythic="item">
             </mythic-card>
         </b-card-group>
         <template v-if="items.length-limit>0">
@@ -38,9 +28,9 @@
     const PAGE_LIMIT = 21;
 
     export default {
-        name:       "MythicCardsDeck",
+        name: "MythicCardsDeck",
         components: {MythicSearchPanel, MythicCard},
-        props:      ["mythicList", "filters"],
+        props: ["mythicList", "filters"],
         data() {
             return {
                 items: [],
@@ -48,16 +38,16 @@
 
                 counters: {
                     doneInTime: 0,
-                    guildRace:  0,
+                    guildRace: 0,
                 }
             }
         },
-        computed:   {
+        computed: {
             groups() {
                 return ArrayUtils.splitBy(3, this.items.slice(0, this.limit));
             },
         },
-        methods:    {
+        methods: {
             applyFilters(filters) {
                 this.items = this.items.filter(m => {
                     if (!m.thisWeek && filters.includes("week")) return false;
@@ -102,7 +92,7 @@
             },
             applyCounters() {
                 this.counters.doneInTime = 0;
-                this.counters.guildRace  = 0;
+                this.counters.guildRace = 0;
                 this.items.forEach(m => {
                     if (m.done_in_time) this.counters.doneInTime++;
                     if (m.isGuildRace) this.counters.guildRace++;

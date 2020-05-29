@@ -1,17 +1,18 @@
 <template>
     <b-card
-            :border-variant="borderVariant" no-body  :footer="formattedDate" :header="(`${dungeon} (${level})`)">
+            :border-variant="borderVariant" no-body :footer="formattedDate"
+            :header="(`${mythic.dungeon_name} (${mythic.level})`)">
         <b-card-body>
-                <b-badge v-if="in_time" variant="success">В ТАЙМ: {{duration}}</b-badge>
-                <b-badge v-else variant="danger">НЕ В ТАЙМ: {{duration}}</b-badge>
+            <b-badge v-if="mythic.done_in_time" variant="success">В ТАЙМ: {{mythic.done_in_formatted}}</b-badge>
+            <b-badge v-else variant="danger">НЕ В ТАЙМ: {{mythic.done_in_formatted}}</b-badge>
         </b-card-body>
         <div class="mt-2">
             <b-list-group flush>
                 <b-list-group-item
-                        @click="($router.push({path: '/player/'+player.name}).catch(() => {}))"
-                        class="user-line" v-for="player in sortedMembers" :key="(`${mythic.mythic_hash}_${player.id}`)">
-                    <img class="spec-image" :src="getSpecImage(player.spec.id)"/>
-                    {{player.name}} ({{getGear(player.name)}})
+                        @click="modal(player)"
+                        :class="className(player.specialization)" v-for="player in sortedMembers"
+                        :key="(`${mythic.mythic_hash}_${player.id}`)">
+                    <player-name :player="player" :linked="false" :tooltip="false" :gear="true"></player-name>
                 </b-list-group-item>
             </b-list-group>
             <b-card-body>
@@ -19,15 +20,19 @@
                 <b-badge
                         class="mr-2"
                         variant="warning" style="cursor: pointer; user-select: none"
-                        v-b-popover.hover.top="affixes">Аффиксы</b-badge>
+                        v-b-popover.hover.top="affixes">Аффиксы
+                </b-badge>
                 <b-badge
                         v-if="mythic.thisWeek"
                         class="mr-2"
                         variant="primary" style="cursor: pointer; user-select: none"
-                        v-b-popover.hover.top="'Подземелье пройдено на этой недели'">Неделя</b-badge>
+                        v-b-popover.hover.top="'Подземелье пройдено на этой недели'">Неделя
+                </b-badge>
                 <b-badge
                         variant="info" style="cursor: pointer; user-select: none"
-                        v-b-popover.hover.top="'Очки Guild Score, которые заработали участники прохождения'">+{{mythic.guildScore}} GS</b-badge>
+                        v-b-popover.hover.top="'Очки Guild Score, которые заработали участники прохождения'">
+                    +{{mythic.guildScore}} GS
+                </b-badge>
             </b-card-body>
         </div>
     </b-card>
@@ -35,46 +40,49 @@
 
 <script>
     import DateUtils from "@/app/utils/DateUtils";
-    import GameData from "@/data/GameData";
-    import SpecUtils from "@/app/players/SpecUtils";
     import Guild from "@/app/Guild";
     import MythicUtils from "@/app/MythicUtils";
+    import PlayerClass from "../../app/entities/player/PlayerClass";
+    import PlayerName from "../player/PlayerName";
+    import UIPlayerOverlay from "../../app/UIPlayerOverlay";
 
     export default {
-        name:     "MythicCard",
-        props:    ["date", "level", "dungeon", "in_time", "duration", "members", "mythic_hash", "mythic"],
+        name: "MythicCard",
+        components: {PlayerName},
+        props: ["mythic"],
         computed: {
             affixes() {
                 return this.mythic.affixes.map(v => v.name).join(", ");
             },
             formattedDate() {
-                return DateUtils.format(this.date > 9999999999 ? this.date : this.date * 1000)
+                return DateUtils.format(this.mythic.completed > 9999999999 ? this.mythic.completed : this.mythic.completed * 1000)
             },
             sortedMembers() {
                 return this.getMembers();
             },
             borderVariant() {
-                const m = Guild.shared.mythic[this.mythic_hash];
+                const m = Guild.shared.mythic[this.mythic.mythic_hash];
                 if (MythicUtils.isGuildRace(m)) return "primary";
                 return m.done_in_time ? "success" : "danger";
             }
         },
-        methods:  {
+        methods: {
             getMembers() {
-                return this.members.sort((a, b) => {
-                    const aS = GameData.specIdToTypeId(a.spec.id);
-                    const bS = GameData.specIdToTypeId(b.spec.id);
-                    return aS > bS ? 1 : -1;
+                return this.mythic.members.sort((a, b) => {
+                    return a.role.id > b.role.id ? 1 : -1;
                 });
-            },
-            getSpecImage(specId) {
-                const specTypeId = GameData.specIdToTypeId(specId);
-                return SpecUtils.getImage(specTypeId);
             },
             getGear(name) {
                 return Guild.shared.hasPlayer(name) ?
                     Guild.shared.getPlayer(name).gear :
                     "-";
+            },
+            className(specialization) {
+                return ['user-line', PlayerClass.getSlugBySpecializationId(specialization.id)].join(' ');
+            },
+            modal(player) {
+                if (player.fromGuild)
+                    UIPlayerOverlay.displayPlayer(player);
             }
         }
     }

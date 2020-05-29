@@ -6,16 +6,18 @@ import VueRouter from 'vue-router';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap-vue/dist/bootstrap-vue-icons.css'
+import './wow-guild.css';
 
-import IndexPage from "@/components/pages/IndexPage";
-import PlayersPage from "@/components/pages/PlayersPage";
-import VersionsPage from "@/components/pages/VersionsPage";
-import MythicPage from "@/components/pages/MythicPage";
-import WarriorPage from "@/components/pages/WarriorPage";
-import LeaversPage from "@/components/pages/LeaversPage";
-import GuildScorePage from "@/components/pages/GuildScore/GuildScorePage";
-import GuildSocreCalcPage from "@/components/pages/GuildScore/GuildSocreCalcPage";
-import GuildScoreRatingPage from "@/components/pages/GuildScore/GuildScoreRatingPage";
+import IndexPage from "./components/pages/IndexPage";
+import PlayersPage from "./components/pages/PlayersPage";
+import VersionsPage from "./components/pages/VersionsPage";
+import MythicPage from "./components/pages/MythicPage";
+import WarriorPage from "./components/pages/WarriorPage";
+import LeaversPage from "./components/pages/LeaversPage";
+import GuildScorePage from "./components/pages/GuildScore/GuildScorePage";
+import GuildSocreCalcPage from "./components/pages/GuildScore/GuildSocreCalcPage";
+import GuildScoreRatingPage from "./components/pages/GuildScore/GuildScoreRatingPage";
+import DevelopPage from "./components/pages/DevelopPage";
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
@@ -27,6 +29,7 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: IndexPage },
     { path: '/players', component: PlayersPage },
+    { path: '/dev', component: DevelopPage },
     { path: '/leavers', component: LeaversPage },
     { path: '/mythic', component: MythicPage },
     { path: '/score', component: GuildScorePage },

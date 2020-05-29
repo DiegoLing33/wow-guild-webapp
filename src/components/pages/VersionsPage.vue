@@ -5,7 +5,7 @@
                 <template v-if="v.updates && v.updates.length > 0">
                     <div class="my-2">Нововведения:</div>
                     <ul style="margin: 0;">
-                        <li style="list-style: none;" v-for="(update, index) of v.updates" :key="update[0]">
+                        <li style="list-style: none;" v-for="(update, index) of v.updates" :key="update[0]+v.version+'mew'+index">
                             <template v-if="update[0].toString().startsWith('-')">
                                 <b class="mt-3 d-block">{{update[1]}}</b>
                             </template>
@@ -19,7 +19,7 @@
                 <template v-if="v.fixes && v.fixes.length > 0">
                     <div class="my-2">Исправления:</div>
                     <ul>
-                        <li v-for="(update) of v.fixes" :key="update[0]">
+                        <li v-for="(update,index) of v.fixes" :key="update[0]+v.version+'fix'+index">
                             <b-badge variant="warning">{{update[0]}}</b-badge>
                             {{update[1]}}
                         </li>
@@ -28,7 +28,7 @@
                 <template v-if="v.bags && v.bags.length > 0">
                     <div class="my-2">Ошибки:</div>
                     <ul>
-                        <li v-for="(update, index) of v.bags" :key="update[0]">
+                        <li v-for="(update, index) of v.bags" :key="update[0]+v.version+'bag'+index">
                             <b-badge variant="danger">{{update[0]}}e{{((index+1).toString().padStart(4, "0"))}}</b-badge>
                             {{update[1]}}
                         </li>

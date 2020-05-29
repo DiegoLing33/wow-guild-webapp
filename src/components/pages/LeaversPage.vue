@@ -1,13 +1,12 @@
 <template>
     <b-container class="leavers-page">
-        <h2 class="my-3"><img :src="tombstone" /> Игроки, которые нас покинули</h2>
+        <h2 class="my-3">Игроки, которые нас покинули</h2>
         <b-table bordered :fields="fields" :items="items">
-            <template v-slot:cell(left_from_guild)="row">
-                {{dataFormat(row.item.left_from_guild * 1000)}}
+            <template v-slot:cell(leftFromGuild)="row">
+                {{dataFormat(row.item.leftFromGuild * 1000)}}
             </template>
-            <template v-slot:cell(spec)="row">
-                <img class="spec-image" :src="getSpecImage(row.item.spec.id)"/>
-                {{row.item.spec.name}}
+            <template v-slot:cell(name)="row">
+                <player-name :player="row.item"></player-name>
             </template>
         </b-table>
     </b-container>
@@ -15,25 +14,23 @@
 </template>
 
 <script>
-    import tombstone from "@/assets/tombstone.svg";
     import Guild from "@/app/Guild";
     import DateUtils from "@/app/utils/DateUtils";
-    import GameData from "@/data/GameData";
-    import SpecUtils from "@/app/players/SpecUtils";
+    import PlayerName from "../player/PlayerName";
 
     export default {
-        name:    "LeaversPage",
+        name: "LeaversPage",
+        components: {PlayerName},
         data() {
             return {
-                tombstone,
                 fields: [
                     {"key": "level", "label": "Уровень"},
                     {"key": "name", "label": "Имя"},
-                    {"key": "class.name", "label": "Класс"},
-                    {"key": "spec", "label": "Спек"},
-                    {"key": "left_from_guild", "label": "Дата"}
+                    {"key": "guildScore.all", "label": "GS", sortable: true},
+                    {"key": "gear", "label": "ГИР", sortable: true},
+                    {"key": "leftFromGuild", "label": "Дата"}
                 ],
-                items:  [],
+                items: [],
             }
         },
         mounted() {
@@ -41,14 +38,12 @@
         },
         methods: {
             update() {
-                this.items = Guild.shared.getPlayersList().filter(v => v.left_from_guild > 0);
+                this.items = Guild.shared.getPlayersList()
+                    .filter(v => v.leftFromGuild > 0).sort((a, b) =>
+                        a.leftFromGuild > b.leftFromGuild ? -1 : 1);
             },
-            dataFormat(d){
+            dataFormat(d) {
                 return DateUtils.format(d);
-            },
-            getSpecImage(specId) {
-                const specTypeId = GameData.specIdToTypeId(specId);
-                return SpecUtils.getImage(specTypeId);
             },
         },
     }
@@ -60,9 +55,10 @@
     }
 </style>
 <style scoped>
-    .leavers-page h2{
+    .leavers-page h2 {
         text-align: center;
     }
+
     .leavers-page img {
         height: 40px;
     }
