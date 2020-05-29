@@ -1,0 +1,131 @@
+<template>
+    <div>
+        <mythic-search-panel :filters="filters" v-on:data="onSearch" class="mt-3"></mythic-search-panel>
+        <div class="my-3">
+            <div>Найдено результатов: <b>{{items.length}}</b></div>
+            <div class="small text-muted">
+                В тайм: {{counters.doneInTime}} ({{getPercentage(counters.doneInTime, items.length)}})
+                Гильдейский марш: {{counters.guildRace}} ({{getPercentage(counters.guildRace, items.length)}})
+            </div>
+        </div>
+        <b-card-group class="mb-4" deck v-for="m in groups" :key="m.map(v=>v.id).join('_')">
+            <mythic-card
+                    v-for="item in m"
+                    :key="item.mythic_hash"
+                    :mythic_hash="item.mythic_hash"
+                    :date="item.completed"
+                    :level="item.level"
+                    :dungeon="item.dungeon_name"
+                    :duration="item.done_in_formatted"
+                    :in_time="item.done_in_time"
+                    :mythic="item"
+                    :members="item.members">
+            </mythic-card>
+        </b-card-group>
+        <template v-if="items.length-limit>0">
+            <b-button @click="onMoreClick" block>Показать еще ({{items.length-limit}})</b-button>
+        </template>
+    </div>
+</template>
+
+<script>
+    import MythicCard from "@/components/mythic/MythicCard";
+    import MythicSearchPanel from "@/components/mythic/MythicSearchPanel";
+    import ArrayUtils from "@/app/utils/ArrayUtils";
+    import MythicUtils from "@/app/MythicUtils";
+    import NumberUtils from "@/app/utils/NumberUtils";
+
+    const PAGE_LIMIT = 21;
+
+    export default {
+        name:       "MythicCardsDeck",
+        components: {MythicSearchPanel, MythicCard},
+        props:      ["mythicList", "filters"],
+        data() {
+            return {
+                items: [],
+                limit: PAGE_LIMIT,
+
+                counters: {
+                    doneInTime: 0,
+                    guildRace:  0,
+                }
+            }
+        },
+        computed:   {
+            groups() {
+                return ArrayUtils.splitBy(3, this.items.slice(0, this.limit));
+            },
+        },
+        methods:    {
+            applyFilters(filters) {
+                this.items = this.items.filter(m => {
+                    if (!m.thisWeek && filters.includes("week")) return false;
+                    if (m.done_in_time && !filters.includes("done")) return false;
+                    if (!m.done_in_time && !filters.includes("broken")) return false;
+                    if (m.isGuildRace && !filters.includes("guild")) return false;
+                    if (!m.isGuildRace && !filters.includes("lfr")) return false;
+                    return true;
+                });
+            },
+            applyPlayersFilter(players) {
+                this.items = this.items.filter(m => {
+                    return players.every(player => m.members.find(v => v.name === player));
+                });
+            },
+            applySortMethods(sortA, sortB) {
+                if (sortA === "dungeon") this.items = this.items.sort((a, b) => {
+                    return parseInt(a.level) > parseInt(b.level) ? -1 : 1;
+                });
+                this.items = this.items.sort((a, b) => {
+                    if (sortA === "new") return a.completed > b.completed ? -1 : 1;
+                    if (sortA === "old") return a.completed < b.completed ? -1 : 1;
+                    if (sortA === "fast") return parseInt(a.done_in) < parseInt(b.done_in) ? -1 : 1;
+                    if (sortA === "long") return parseInt(a.done_in) > parseInt(b.done_in) ? -1 : 1;
+
+                    if (sortA === "hard") return parseInt(a.level) > parseInt(b.level) ? -1 : 1;
+                    if (sortA === "easy") return parseInt(a.level) < parseInt(b.level) ? -1 : 1;
+                    if (sortA === "dungeon") return parseInt(a.dungeon_id) < parseInt(b.dungeon_id) ? -1 : 1;
+                    return a.completed > b.completed ? -1 : 1;
+                });
+                if (sortB === "done") {
+                    this.items = [
+                        ...MythicUtils.getDone(this.items),
+                        ...MythicUtils.getBroken(this.items),
+                    ];
+                } else if (sortB === "broken") {
+                    this.items = [
+                        ...MythicUtils.getBroken(this.items),
+                        ...MythicUtils.getDone(this.items),
+                    ];
+                }
+            },
+            applyCounters() {
+                this.counters.doneInTime = 0;
+                this.counters.guildRace  = 0;
+                this.items.forEach(m => {
+                    if (m.done_in_time) this.counters.doneInTime++;
+                    if (m.isGuildRace) this.counters.guildRace++;
+                });
+            },
+            onSearch(sort, afterSort, selectedFilters, selectedPlayers) {
+                this.limit = 9;
+                this.items = this.mythicList;
+                this.applyFilters(selectedFilters);
+                this.applyPlayersFilter(selectedPlayers);
+                this.applySortMethods(sort, afterSort);
+                this.applyCounters();
+            },
+            onMoreClick() {
+                this.limit += PAGE_LIMIT;
+            },
+            getPercentage(val, max) {
+                return NumberUtils.getPercentage(val, max, 2) + "%";
+            }
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>
