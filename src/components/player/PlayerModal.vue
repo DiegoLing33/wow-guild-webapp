@@ -31,6 +31,7 @@
     import Player from "../../app/entities/Player";
     import PlayerName from "./PlayerName";
     import UIPlayerOverlay from "../../app/UIPlayerOverlay";
+    import API from "@/app/API";
 
     export default {
         name: "PlayerModal",
@@ -48,8 +49,11 @@
         methods: {
             show(player) {
                 this.player = player;
-                this.image = player.image;
                 this.hidden = false;
+
+                API.media(player.name).then(value => {
+                    this.image = value.bust_url;
+                });
             },
             hide(){
                 this.hidden = true;

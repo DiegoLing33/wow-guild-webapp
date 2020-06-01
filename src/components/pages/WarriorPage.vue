@@ -4,7 +4,9 @@
             <b-card no-body>
                 <div style="text-align: center; text-transform: uppercase; font-weight: 100">
                     <b-card-body>
-                        <h2><player-name :linked="false" :player="player"></player-name></h2>
+                        <h2>
+                            <player-name :linked="false" :player="player"></player-name>
+                        </h2>
                     </b-card-body>
                     <b-list-group flush>
                         <b-list-group-item>Уровень: {{player.level}}</b-list-group-item>
@@ -32,7 +34,17 @@
                 </b-row>
             </b-card>
         </b-card-group>
-        <b-card class="text-center">Информация о прохождениях M+</b-card>
+
+        <div>
+            <b-button variant="primary" block v-b-toggle.gs-graph class="my-4">Активность Guild Score</b-button>
+            <b-collapse id="gs-graph">
+                <b-card class="mb-3">
+                    <line-chart height="200" :options="{responsive: true}" :chart-data="datacollection"></line-chart>
+                </b-card>
+            </b-collapse>
+        </div>
+
+        <b-card class="text-center mb-3">Информация о прохождениях M+</b-card>
         <template v-if="mythic.length > 0">
             <mythic-cards-deck :filters="['done', 'broken', 'guild', 'lfr']" :mythic-list="mythic"></mythic-cards-deck>
         </template>
@@ -45,15 +57,16 @@
 </template>
 
 <script>
-    import MythicUtils from "@/app/MythicUtils";
     import Guild from "@/app/Guild";
     import MythicCardsDeck from "@/components/mythic/MythicCardsDeck";
     import PlayerName from "../player/PlayerName";
     import Player from "../../app/entities/Player";
+    import LineChart from "@/components/LineChart";
+    import DateUtils from "@/app/utils/DateUtils";
 
     export default {
         name:       "WarriorPage",
-        components: {PlayerName, MythicCardsDeck},
+        components: {LineChart, PlayerName, MythicCardsDeck},
         props:      ["name"],
         watch:      {
             selectedFilters() {
@@ -65,16 +78,19 @@
         },
         data() {
             return {
-                player:    new Player({}),
-                specImage: null,
-                mythic:    [],
-                items:     [],
-                count:     0,
+                player:         new Player({}),
+                specImage:      null,
+                datacollection: {
+                    datasets: []
+                },
+                mythic:         [],
+                items:          [],
+                count:          0,
 
-                keystones:{
-                    counter:{
-                        countDoneInTime:0,
-                        countWithGuild: 0,
+                keystones: {
+                    counter: {
+                        countDoneInTime: 0,
+                        countWithGuild:  0,
                     }
                 },
             }
@@ -86,7 +102,29 @@
             update() {
                 this.player    = Guild.shared.getPlayer(this.name);
                 this.specImage = this.player.role.image;
-                this.mythic    = MythicUtils.getSortedByLevel(MythicUtils.getUniqueTeamMythicList(Guild.shared.getMythicByName(this.player.name)));
+                this.mythic    = Guild.shared.getMythicByName(this.player.name);
+                this.fillData();
+            },
+            fillData() {
+                const src           = this.mythicUtilsGet(this.mythic);
+                this.datacollection = {
+                    labels:   Object.keys(src),
+                    datasets: [{
+                        label:           "Guild Score",
+                        backgroundColor: '#9ff879',
+                        data:            Object.values(src),
+                    }],
+                };
+            },
+
+            mythicUtilsGet(mythic) {
+                let _items = {};
+                mythic.forEach((m) => {
+                    const key = DateUtils.format(m.completed).split(" ")[0];
+                    if (_items[key] === undefined) _items[key] = 0;
+                    _items[key] += m.guildScore;
+                });
+                return _items;
             },
         }
     }

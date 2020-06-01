@@ -1,20 +1,16 @@
 <template>
     <b-card
             :border-variant="borderVariant" no-body :footer="formattedDate"
-            :header="(`${mythic.dungeon_name} (${mythic.level})`)">
+            :header="(`${mythic.dungeon.name} (${mythic.level})`)">
         <b-card-body>
-            <b-badge v-if="mythic.done_in_time" variant="success">В ТАЙМ: {{mythic.done_in_formatted}}</b-badge>
-            <b-badge v-else variant="danger">НЕ В ТАЙМ: {{mythic.done_in_formatted}}</b-badge>
+            <b-badge v-if="mythic.isDone" variant="success">В ТАЙМ: {{mythic.doneInTimeFormat}}</b-badge>
+            <b-badge v-else variant="danger">НЕ В ТАЙМ: {{mythic.doneInTimeFormat}}</b-badge>
         </b-card-body>
         <div class="mt-2">
-            <b-list-group flush>
-                <b-list-group-item
-                        @click="modal(player)"
-                        :class="className(player.specialization)" v-for="player in sortedMembers"
-                        :key="(`${mythic.mythic_hash}_${player.id}`)">
-                    <player-name :player="player" :linked="false" :tooltip="false" :gear="true"></player-name>
-                </b-list-group-item>
-            </b-list-group>
+            <mythic-card-players
+                    :players="mythic.players"
+                    :mythic-hash="mythic.mythicHash">
+            </mythic-card-players>
             <b-card-body>
                 <slot></slot>
                 <b-badge
@@ -40,51 +36,30 @@
 
 <script>
     import DateUtils from "@/app/utils/DateUtils";
-    import Guild from "@/app/Guild";
-    import MythicUtils from "@/app/MythicUtils";
-    import PlayerClass from "../../app/entities/player/PlayerClass";
-    import PlayerName from "../player/PlayerName";
-    import UIPlayerOverlay from "../../app/UIPlayerOverlay";
+    import Mythic from "@/app/entities/Mythic";
+    import MythicCardPlayers from "@/components/mythic/MythicCardPlayers";
 
     export default {
         name: "MythicCard",
-        components: {PlayerName},
-        props: ["mythic"],
+        components: {MythicCardPlayers},
+        props: {
+            mythic: {
+                required: true,
+                type: Mythic
+            }
+        },
         computed: {
             affixes() {
                 return this.mythic.affixes.map(v => v.name).join(", ");
             },
             formattedDate() {
-                return DateUtils.format(this.mythic.completed > 9999999999 ? this.mythic.completed : this.mythic.completed * 1000)
-            },
-            sortedMembers() {
-                return this.getMembers();
+                return DateUtils.format(this.mythic.completed);
             },
             borderVariant() {
-                const m = Guild.shared.mythic[this.mythic.mythic_hash];
-                if (MythicUtils.isGuildRace(m)) return "primary";
-                return m.done_in_time ? "success" : "danger";
+                if (this.mythic.isGuildRace()) return "primary";
+                return this.mythic.isDone ? "success" : "danger";
             }
         },
-        methods: {
-            getMembers() {
-                return this.mythic.members.sort((a, b) => {
-                    return a.role.id > b.role.id ? 1 : -1;
-                });
-            },
-            getGear(name) {
-                return Guild.shared.hasPlayer(name) ?
-                    Guild.shared.getPlayer(name).gear :
-                    "-";
-            },
-            className(specialization) {
-                return ['user-line', PlayerClass.getSlugBySpecializationId(specialization.id)].join(' ');
-            },
-            modal(player) {
-                if (player.fromGuild)
-                    UIPlayerOverlay.displayPlayer(player);
-            }
-        }
     }
 </script>
 

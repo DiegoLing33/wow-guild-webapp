@@ -10,7 +10,7 @@ import bow from "../../../assets/types/bow-and-arrow.svg";
 export default class PlayerRole {
     static UNDEFINED = new PlayerRole({id: 0, title: "-", image: noone});
     static TANK = new PlayerRole({id: 1, title: "Т", image: shield});
-    static HEALER = new PlayerRole({id: 2, title: "Т", image: heal});
+    static HEALER = new PlayerRole({id: 2, title: "Х", image: heal});
     static MILLIE = new PlayerRole({id: 3, title: "МД", image: sword});
     static RANGE = new PlayerRole({id: 4, title: "РД", image: bow});
 

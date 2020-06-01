@@ -1,5 +1,3 @@
-import API from "./API";
-
 /**
  * The player modal component
  */
@@ -16,10 +14,7 @@ export default class UIPlayerOverlay {
      * @param {Player} player
      */
     static displayPlayer(player) {
-        API.media(player.name).then(value => {
-            player.image = value.bust_url;
-            UIPlayerOverlay.component.show(player);
-        });
+        UIPlayerOverlay.component.show(player);
     }
 
     /**

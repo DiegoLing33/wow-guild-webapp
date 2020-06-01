@@ -88,7 +88,7 @@
             },
             availableOptions() {
                 const criteria = this.criteria
-                const options  = this.options.filter(opt => this.value.indexOf(opt) === -1)
+                const options  = this.options.filter(opt => this.value.indexOf(opt) === -1).sort((a, b) => a.localeCompare(b))
                 if (criteria) {
                     return options.filter(opt => opt.toLowerCase().indexOf(criteria) > -1);
                 }

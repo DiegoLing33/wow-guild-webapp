@@ -6,7 +6,7 @@ export default class DateUtils {
      * @returns {string}
      */
     static format(timecode) {
-        const date = new Date(timecode);
+        const date = new Date(timecode > 9999999999 ? timecode : timecode * 1000);
         return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}, в ${date.toLocaleTimeString()}`;
     }
 

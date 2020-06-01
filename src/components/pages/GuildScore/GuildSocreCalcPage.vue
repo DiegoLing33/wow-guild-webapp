@@ -34,16 +34,16 @@
 
 <script>
     import GuildScoreInfoCommon from "@/components/common/GuildScoreInfoCommon";
-    import MythicUtils from "@/app/MythicUtils";
+    import Mythic from "@/app/entities/Mythic";
     export default {
         name: "GuildSocreCalcPage",
         components: {GuildScoreInfoCommon},
         computed:{
           result(){
-              return MythicUtils.getGuildScoreForPlayer({
-                  done_in_time: (this.doneInTime === "1") ? 0.15 : 0.1,
+              return Mythic.getGuildScoreForPlayer({
+                  isDone:       (this.doneInTime === "1"),
                   guildPlayers: {length: this.guildPlayersCount},
-                  level: this.keyLevel
+                  level:        this.keyLevel
               });
           }
         },

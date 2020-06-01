@@ -3,7 +3,7 @@
         <b-container>
             <players-table-filter :handler="handleFilterChanges" class="mb-3"></players-table-filter>
             <div class="my-3">
-                Отображено результатов: <b>{{items_count}}</b>
+                Отображено результатов: <b>{{items.length}}</b>
             </div>
             <b-table :busy="busy" bordered :items="items" :fields="fields">
                 <template v-slot:cell(name)="row">
@@ -22,17 +22,6 @@
                 <template v-slot:cell(gear)="row">
                     {{row.item.gear}}
                 </template>
-                <template v-slot:cell(id)="row">
-                    {{getMythicDone(row.item.name)}}
-                </template>
-                <template v-slot:cell(mythic)="row">
-                    {{getMythicRace(row.item.name)}}
-                </template>
-                <template v-slot:head(mythic)>
-                    ГИ / Поиск <a
-                        v-b-popover.hover.top="'ГИ - поход только с игроками гильдии / Поиск - добор людей из поиска'"
-                        href="#">?</a>
-                </template>
             </b-table>
         </b-container>
     </div>
@@ -44,138 +33,68 @@
     import sword from "@/assets/types/sword.svg";
     import bow from "@/assets/types/bow-and-arrow.svg";
     import PlayersTableFilter from "@/components/PlayersTableFilter";
-    import MythicUtils from "@/app/MythicUtils";
     import Guild from "@/app/Guild";
     import PlayerName from "../player/PlayerName";
+    import PlayersButch from "@/app/butches/PlayersButch";
 
     export default {
         name:       "PlayersPage",
         components: {PlayerName, PlayersTableFilter},
-        computed:   {
-            items_count() {
-                return this.items.length;
-            },
-            fields() {
-                const arr = [
+        data() {
+            return {
+                busy:   false,
+                items:  [],
+                filter: {
+                    specs: [
+                        PlayersButch.Filter.TANKS, PlayersButch.Filter.HEALERS,
+                        PlayersButch.Filter.RANGED, PlayersButch.Filter.MILLIE
+                    ],
+                    etc:   [
+                        PlayersButch.Filter.IN_GUILD, PlayersButch.Filter.MAX_LEVEL_ONLY
+                    ],
+                    name:  "",
+                },
+                images: {
+                    shield,
+                    bow,
+                    heal,
+                    swords
+                },
+                fields: [
                     {key: "level", label: "Уровень", sortable: true},
                     {key: "name", label: "Имя"},
-                ];
-                if (this.filter.etc.includes("m+")) arr.push(...[
-                    {key: "id", label: "Тайм / Слом"},
-                    {key: "mythic", label: "ГИ / Поиск"}
-                ]);
-                if(!this.filter.etc.includes("m+")) arr.push(...[
                     {key: "rank.id", label: "Ранг", sortable: true},
                     {key: "class", label: "Класс"},
-                ])
-                arr.push({key: "gear", label: "ГИР", sortable: true});
-
-                if(this.filter.etc.includes("wgs")) arr.push({key: "guildScore.thisWeek", label: "Guild Score (Week)", sortable: true});
-                else arr.push({key: "guildScore.all", label: "Guild Score", sortable: true});
-                return arr;
+                    {key: "guildScore.all", label: "Guild Score", sortable: true}
+                ]
             }
         },
         mounted() {
             Guild.shared.wait(this.applyTable.bind(this));
         },
         methods:    {
-            getAllPlayers() {
-                const source = Guild.shared.getPlayersList().filter(p => !Guild.shared.isPlayerLeft(p.name));
-                return source
-                    .sort((a, b) => a.level > b.level ? 1 : -1)
-                    .sort((a, b) => a.rank.id > b.rank.id ? 1 : -1);
-            },
             applyTable() {
-                this.busy = true;
-                this.items = this.getAllPlayers().filter(value => {
-                    if(value.left_from_guild > 0) return false;
-                    if(!value.name.toLowerCase().includes(this.filter.name.toLowerCase())) return false;
-                    const specId = value.role.id;
-                    if (specId === 1 && !this.filter.specs.includes("tanks")) return false;
-                    if (specId === 2 && !this.filter.specs.includes("healers")) return false;
-                    if (specId === 3 && !this.filter.specs.includes("mds")) return false;
-                    if (specId === 4 && !this.filter.specs.includes("rds")) return false;
-
-                    if (value.level < 120 && this.filter.etc.includes("120lvl")) return false;
-                    return true;
-                });
-                this.busy = false;
+                this.busy   = true;
+                this.items = Guild.shared.createPlayersButch()
+                    .filter(
+                        ...this.filter.specs,
+                        ...this.filter.etc
+                    )
+                    .sort(
+                        PlayersButch.Sorting.FIRST_HIGH_RANK,
+                        PlayersButch.Sorting.FIRST_HIGH_LEVEL,
+                        PlayersButch.Sorting.ALPHABETIC
+                    )
+                    .getButchWithName(this.filter.name);
+                this.busy  = false;
             },
+
             handleFilterChanges(specs, etc, name) {
                 this.filter.specs = specs;
                 this.filter.etc   = etc;
-                this.filter.name   = name;
+                this.filter.name  = name;
                 this.applyTable();
             },
-            getMythicRace(name){
-                const ms = Guild.shared.getMythicByName(name);
-                const guild = MythicUtils.getGuildRace(ms).length;
-                const lfr = ms.length - guild;
-                return `${guild} / ${lfr}`
-            },
-            getMythicDone(name){
-                const ms = Guild.shared.getMythicByName(name);
-                const done = MythicUtils.getDone(ms).length;
-                const broke = ms.length - done;
-                return `${done} / ${broke}`
-            }
         },
-        data() {
-            return {
-                busy: false,
-                items:  [],
-                filter: {
-                    specs: ["tanks", "healers", "rds", "mds"],
-                    etc:   [],
-                    name: "",
-                },
-                images: {
-                    shield,
-                    bow,
-                    heal,
-                    sword
-                }
-            }
-        }
     }
 </script>
-<style>
-    .table {
-        color: #d5d5d5;
-    }
-
-    .table-bordered {
-        border: 1px solid #444444 !important;
-    }
-
-    .table-bordered th, .table-bordered td {
-        border: 1px solid #444444 !important;
-    }
-
-    .table thead th {
-        vertical-align: bottom;
-        border-bottom: 1px solid #444444 !important;
-        background-color: #111;
-    }
-
-    .table thead th {
-        color: white !important;
-    }
-
-    .table th {
-        color: white !important;
-    }
-
-    .table th, .table td {
-
-    }
-
-    .table.b-table > thead > tr > [aria-sort="none"], .table.b-table > tfoot > tr > [aria-sort="none"] {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='101' height='101' view-box='0 0 101 101' preserveAspectRatio='none'%3e%3cpath fill='grey' opacity='.3' d='M51 1l25 23 24 22H1l25-22zM51 101l25-23 24-22H1l25 22z'/%3e%3c/svg%3e");
-    }
-</style>
-<style>
-    .spec-image {
-        height: 20px;
-    }
-</style>

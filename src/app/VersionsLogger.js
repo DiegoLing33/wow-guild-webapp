@@ -1,5 +1,13 @@
 export const VERSION_LOGS = [
     {
+        version: "0.10-alpha",
+        updates: [
+            addItem(-1, "Общий интерфейс"),
+            addItem(11, "Добавлена фильтрация по алфавиту А-Я в фильтре \"Выбрать участников гильдии\""),
+        ],
+        date:    "31.05.2020"
+    },
+    {
         version: "0.9-alpha",
         updates: [
             addItem(-1, "Общий интерфейс"),

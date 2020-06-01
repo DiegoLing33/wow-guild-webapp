@@ -37,3 +37,37 @@
 .monk-bg {background-color: rgb(0, 255, 150) !important; }
 .druid-bg {background-color: rgb(255, 125, 106) !important; }
 .dh-bg {background-color: rgb(163, 48, 201) !important; }
+
+.spec-image {
+    height: 20px;
+}
+
+.table {
+    color: #d5d5d5;
+}
+
+.table-bordered {
+    border: 1px solid #444444 !important;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #444444 !important;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 1px solid #444444 !important;
+    background-color: #111;
+}
+
+.table thead th {
+    color: white !important;
+}
+
+.table th {
+    color: white !important;
+}
+
+.table.b-table > thead > tr > [aria-sort="none"], .table.b-table > tfoot > tr > [aria-sort="none"] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='101' height='101' view-box='0 0 101 101' preserveAspectRatio='none'%3e%3cpath fill='grey' opacity='.3' d='M51 1l25 23 24 22H1l25-22zM51 101l25-23 24-22H1l25 22z'/%3e%3c/svg%3e");
+}

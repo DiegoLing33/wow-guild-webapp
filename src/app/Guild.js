@@ -1,7 +1,7 @@
 import API from "@/app/API";
-import MythicUtils from "@/app/MythicUtils";
-import WoWUtils from "@/app/utils/WoWUtils";
 import Player from "./entities/Player";
+import Mythic from "@/app/entities/Mythic";
+import PlayersButch from "@/app/butches/PlayersButch";
 
 export default class Guild {
 
@@ -33,7 +33,7 @@ export default class Guild {
     }
 
     setMythic(mythicHash, mythic) {
-        this.mythic[mythicHash] = this.initMythic(mythic);
+        this.mythic[mythicHash] = new Mythic(mythic);
     }
 
     addMythic(mythic) {
@@ -57,41 +57,20 @@ export default class Guild {
         return Object.values(this.players);
     }
 
-    initMythic(mythic) {
-        const completed = new Date(mythic.completed);
-        mythic.isGuildRace = MythicUtils.isGuildRace(mythic);
-        mythic.thisWeek = WoWUtils.getWeekNumber(completed)
-            === WoWUtils.getWeekNumber(new Date());
-        mythic.lastWeek = WoWUtils.getWeekNumber(completed)
-            === (WoWUtils.getWeekNumber(new Date()) - 1);
-        mythic.guildPlayers = mythic.members.filter(v => Guild.shared.hasPlayer(v.name));
-        mythic.guildScore = MythicUtils.getGuildScoreForPlayer(mythic);
-
-        mythic.members = mythic.members.map(v => {
-            const player = new Player(v);
-            if(this.hasPlayer(v.name)){
-                const guildPlayer = this.getPlayer(v.name);
-                player.gear = guildPlayer.gear;
-                player.race = guildPlayer.race;
-                player.guildScore = guildPlayer.guildScore;
-                player.class.id = guildPlayer.class.id;
-                player.rank = guildPlayer.rank;
-                player.class.title = guildPlayer.class.title;
-                player.fromGuild = true;
-            }else{
-                player.gear = 0;
-                player.fromGuild = false;
-            }
-            return player;
-        });
-
-        if (completed.getDay() === 3 && mythic.thisWeek && completed.getHours() < 10) {
-            mythic.thisWeek = false;
-            mythic.lastWeek = true;
-        }
-        return mythic;
+    /**
+     * Creates and returns the new players butch object
+     * @return {PlayersButch}
+     *
+     * @see PlayersButch
+     */
+    createPlayersButch(){
+        return new PlayersButch(this.getPlayersList());
     }
 
+    /**
+     * Returns the mythic list
+     * @return {Mythic[]}
+     */
     getMythicList() {
         return Object.values(this.mythic);
     }
@@ -130,19 +109,19 @@ export default class Guild {
 
     calculateGuildScore() {
         this.getMythicList().forEach(m => {
-            m.members.forEach(player => {
-                if (!this.hasPlayer(player.name)) return;
+            m.players.forEach(player => {
+                if (!player.fromGuild) return;
                 if (this.isPlayerLeft(player.name)) return;
 
-                this.getPlayer(player.name).guildScore.all += m.guildScore;
+                player.guildScore.all += m.guildScore;
                 this.guildScore.all += m.guildScore;
 
                 if (m.thisWeek) {
-                    this.getPlayer(player.name).guildScore.thisWeek += m.guildScore;
+                    player.guildScore.thisWeek += m.guildScore;
                     this.guildScore.thisWeek += m.guildScore;
                 }
                 if (m.lastWeek) {
-                    this.getPlayer(player.name).guildScore.lastWeek += m.guildScore;
+                    player.guildScore.lastWeek += m.guildScore;
                     this.guildScore.lastWeek += m.guildScore;
                 }
             });
@@ -203,19 +182,11 @@ export default class Guild {
         this.isMythicLoaded = true;
     }
 
-    /**
-     * Returns true, if player from guild
-     * @param name
-     * @returns {boolean}
-     */
-    isPlayerFormGuild(name) {
-        return Guild.shared.getPlayer(name) !== undefined;
-    }
 
     getMythicByName(name) {
         const ms = [];
         this.getMythicList().forEach(m => {
-            if (m.members.some(v => v.name === name) && ms.every(v => v.teah_hash !== m.team_hash))
+            if (m.players.some(v => v.name === name) && ms.every(v => v.teahHash !== m.teamHash))
                 ms.push(m);
         });
         return ms;
