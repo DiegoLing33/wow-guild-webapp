@@ -1,3 +1,3 @@
 # Wow Guild Web App
 
-See the example: http://prestij.xyz
+See the demo: http://demo.prestij.xyz
