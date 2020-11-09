@@ -113,7 +113,7 @@ export default class PlayersButch extends ObjectsButch{
      */
     filter(...methods) {
         this.__objects = this.__objects.filter(player => {
-            if (player.level < 120 && methods.includes(PlayersButch.Filter.MAX_LEVEL_ONLY)) return false;
+            if (player.level < 50 && methods.includes(PlayersButch.Filter.MAX_LEVEL_ONLY)) return false;
 
             // Roles
             if (methods.includes(PlayersButch.Filter.TANKS) ||
@@ -126,13 +126,13 @@ export default class PlayersButch extends ObjectsButch{
                 if (player.role.id === 4 && !methods.includes(PlayersButch.Filter.RANGED)) return false;
             }
 
-            if(methods.includes(PlayersButch.Filter.LEFT_GUILD) ||
-                methods.includes(PlayersButch.Filter.IN_GUILD)){
-                if (player.leftFromGuild > 0 && !methods.includes(PlayersButch.Filter.LEFT_GUILD)) return false;
-                if (player.leftFromGuild === 0 && !methods.includes(PlayersButch.Filter.IN_GUILD)) return false;
-            }
+            // if(methods.includes(PlayersButch.Filter.LEFT_GUILD) ||
+            //     methods.includes(PlayersButch.Filter.IN_GUILD)){
+            //     if (player.leftFromGuild > 0 && !methods.includes(PlayersButch.Filter.LEFT_GUILD)) return false;
+            //     if (player.leftFromGuild === 0 && !methods.includes(PlayersButch.Filter.IN_GUILD)) return false;
+            // }
 
-//           result = result && (methods.includes(PlayersButch.Filter.ONLY_HEALERS) && player.role.id !== 1);
+          // result = result && (methods.includes(PlayersButch.Filter.ONLY_HEALERS) && player.role.id !== 1);
             return true;
         });
         return this;
