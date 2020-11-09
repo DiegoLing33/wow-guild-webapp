@@ -56,9 +56,9 @@
                         {text: 'МД', value: PlayersButch.Filter.MILLIE}
                     ],
                     butchFilter: [
-                        {text: 'Только 120-ые', value: PlayersButch.Filter.MAX_LEVEL_ONLY},
-                        {text: 'Текущий состав гильдии', value: PlayersButch.Filter.IN_GUILD},
-                        {text: 'Покинули гильдию', value: PlayersButch.Filter.LEFT_GUILD},
+                        {text: 'Только 50-ые', value: PlayersButch.Filter.MAX_LEVEL_ONLY},
+                        // {text: 'Текущий состав гильдии', value: PlayersButch.Filter.IN_GUILD},
+                        // {text: 'Покинули гильдию', value: PlayersButch.Filter.LEFT_GUILD},
                     ]
                 },
             }
