@@ -12,6 +12,7 @@ export default class Guild {
         this.apply(data);
         this.players = {};
         this.mythic = {};
+        this.maxActivity = 1;
     }
 
     /**
@@ -124,6 +125,8 @@ export default class Guild {
                     player.guildScore.lastWeek += m.guildScore;
                     this.guildScore.lastWeek += m.guildScore;
                 }
+                const totalScore = player.guildScore.thisWeek + player.guildScore.lastWeek;
+                this.maxActivity = totalScore > this.maxActivity ? totalScore: this.maxActivity;
             });
         });
     }

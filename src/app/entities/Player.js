@@ -14,7 +14,7 @@ import PlayerGuildRank from "./player/PlayerGuildRank";
 export default class Player {
 
     constructor(raw = {}) {
-        raw = raw || {};
+        this.raw = raw || {};
 
         /**
          * Inline player id
@@ -80,7 +80,7 @@ export default class Player {
          * The left from guild time
          * @type {number}
          */
-        this.leftFromGuild = raw.left_from_guild || 0;
+        this.leftFromGuild = 0; //raw.left_from_guild || 0;
 
         /**
          * The player guild score

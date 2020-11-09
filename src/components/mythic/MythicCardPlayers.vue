@@ -2,8 +2,8 @@
     <b-list-group flush>
         <b-list-group-item
                 @click="modal(player)"
-                :class="className(player.specialization)" v-for="player in getSortedPlayers()"
-                :key="(`${mythicHash}_${player.id}`)">
+                :class="className(player.specialization)" v-for="(player, i) in getSortedPlayers()"
+                :key="(`${mythicHash}_${player.id}_${i}`)">
             <player-name :player="player" :linked="false" :gear="true"></player-name>
         </b-list-group-item>
     </b-list-group>

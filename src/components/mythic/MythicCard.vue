@@ -46,9 +46,16 @@
             mythic: {
                 required: true,
                 type: Mythic
+            },
+            mythicHash:{
+              required: true,
+              type: String
             }
         },
-        computed: {
+      created() {
+          console.log(this.mythic);
+      },
+      computed: {
             affixes() {
                 return this.mythic.affixes.map(v => v.name).join(", ");
             },

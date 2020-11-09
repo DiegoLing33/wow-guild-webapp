@@ -35,26 +35,26 @@
                             </router-link>
                         </li>
                     </b-nav-dropdown>
-                    <b-nav-dropdown>
-                        <template v-slot:button-content>
-                            <img :src="medal"/>Guild Score
-                        </template>
-                        <li>
-                            <router-link class="dropdown-item" to="/score">
-                                <img :src="star"/> ТОП-5 GS
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link class="dropdown-item" to="/score/rating">
-                                <img :src="rating"/> Общий рейтинг GS
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link class="dropdown-item" to="/score/calc">
-                                <img :src="clipboard"/> Калькулятор GS
-                            </router-link>
-                        </li>
-                    </b-nav-dropdown>
+<!--                    <b-nav-dropdown>-->
+<!--                        <template v-slot:button-content>-->
+<!--                            <img :src="medal"/>Guild Score-->
+<!--                        </template>-->
+<!--                        <li>-->
+<!--                            <router-link class="dropdown-item" to="/score">-->
+<!--                                <img :src="star"/> ТОП-5 GS-->
+<!--                            </router-link>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <router-link class="dropdown-item" to="/score/rating">-->
+<!--                                <img :src="rating"/> Общий рейтинг GS-->
+<!--                            </router-link>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <router-link class="dropdown-item" to="/score/calc">-->
+<!--                                <img :src="clipboard"/> Калькулятор GS-->
+<!--                            </router-link>-->
+<!--                        </li>-->
+<!--                    </b-nav-dropdown>-->
                     <router-link class="nav-item nav-link" to="/mythic"><img :src="dungeon"/>Mythic+</router-link>
                     <router-link class="nav-item nav-link" to="/versions"><img :src="log"/>Версии</router-link>
                 </b-navbar-nav>

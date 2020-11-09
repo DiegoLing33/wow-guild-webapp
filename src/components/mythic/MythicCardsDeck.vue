@@ -8,8 +8,8 @@
                 Гильдейский марш: {{counters.guildRace}} ({{getPercentage(counters.guildRace, items.length)}})
             </div>
         </div>
-        <b-card-group class="mb-4" deck v-for="m in groups" :key="m.map(v=>v.id).join('_')">
-            <mythic-card v-for="item in m" :key="item.mythic_hash" :mythic_hash="item.mythic_hash" :mythic="item">
+        <b-card-group class="mb-4" deck v-for="(m, i) in groups" :key="m.map(v=>v.id).join('_')">
+            <mythic-card v-for="item in m" :key="`${item.mythicHash}_${i}`" :mythic-hash="item.mythicHash" :mythic="item">
             </mythic-card>
         </b-card-group>
         <template v-if="items.length-limit>0">
