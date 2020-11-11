@@ -43,6 +43,7 @@
             await Guild.shared.updatePlayers(this.$refs.loader.updateBar.bind(this));
             await Guild.shared.updateMythic(this.$refs.loader.updateBar.bind(this));
             this.$refs.loader.display(false);
+            this.$store.dispatch("initAuthorization").then();
         },
         data() {
             return {

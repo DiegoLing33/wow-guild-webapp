@@ -58,6 +58,14 @@
                     <router-link class="nav-item nav-link" to="/mythic"><img :src="dungeon"/>Mythic+</router-link>
                     <router-link class="nav-item nav-link" to="/versions"><img :src="log"/>Версии</router-link>
                 </b-navbar-nav>
+                <b-navbar-nav class="ml-auto">
+                    <a v-if="$store.getters.battleTag === ''" class="nav-item nav-link" :href="getAuthURL()" >
+                        <img :src="bnet"/> Авторизация
+                    </a>
+                    <router-link class="nav-item nav-link" to="/profile" v-else :href="getAuthURL()" >
+                        <img :src="bnet"/> {{$store.getters.battleTag}}
+                    </router-link>
+                </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </div>
@@ -74,13 +82,16 @@
     import clipboard from "@/assets/clipboard.svg";
     import star from "@/assets/star.svg";
     import rating from "@/assets/rating.svg";
+    import bnet from "@/modules/Login/resources/bnet-large.png";
 
     import Guild from "@/app/Guild";
+    import BlizzardAuthService from "@/modules/Login/service/BlizzardAuthService";
 
     export default {
         name:    "NavigationBar",
         data() {
             return {
+                bnet,
                 book,
                 log,
                 warriors,
@@ -106,6 +117,9 @@
                 const rgba          = Guild.shared.crest_background_color.split(",");
                 this.navColor       = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 0.72)`;
                 this.navBorderColor = increase_brightness(rgba[0], rgba[1], rgba[2], 40);
+            },
+            getAuthURL(){
+                return BlizzardAuthService.getAuthURL();
             }
         }
     }
