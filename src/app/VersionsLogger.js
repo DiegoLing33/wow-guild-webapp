@@ -1,5 +1,19 @@
 export const VERSION_LOGS = [
     {
+        version: "0.11-alpha",
+        updates: [
+            addItem(-1, "Общий интерфейс"),
+            addItem(180, "Удалена механика Guild Score"),
+            addItem(180, "Добавлена ссылка на Discord сообщества"),
+            addItem(180, "В списке игроков отображается активность"),
+            addItem(180, "Добавлена Battlenet авторизация"),
+
+            addItem(-1, "Активность игроков (v0.1)"),
+            addItem(180, "Добавлена механика Guild Player Activity - активность игроков"),
+        ],
+        date:    "11.11.2020",
+    },
+    {
         version: "0.10-alpha",
         updates: [
             addItem(-1, "Общий интерфейс"),

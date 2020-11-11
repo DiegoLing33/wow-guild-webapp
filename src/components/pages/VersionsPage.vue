@@ -1,17 +1,21 @@
 <template>
     <div>
         <b-container>
-            <b-card v-for="v of versions" :footer="v.date" :title="(`Версия: ${v.version}`)" :key="v.version" class="mb-2">
+            <b-card v-for="v of versions" :footer="v.date" :title="(`Версия: ${v.version}`)" :key="v.version"
+                    class="mb-2">
                 <template v-if="v.updates && v.updates.length > 0">
                     <div class="my-2">Нововведения:</div>
                     <ul style="margin: 0;">
-                        <li style="list-style: none;" v-for="(update, index) of v.updates" :key="update[0]+v.version+'mew'+index">
+                        <li style="list-style: none;" v-for="(update, index) of v.updates"
+                            :key="update[0]+v.version+'mew'+index">
                             <template v-if="update[0].toString().startsWith('-')">
-                                <b class="mt-3 d-block">{{update[1]}}</b>
+                                <b class="mt-3 d-block">{{ update[1] }}</b>
                             </template>
                             <template v-else>
-                            <b-badge variant="primary">{{update[0]}}d{{((index+1).toString().padStart(4, "0"))}}</b-badge>
-                            {{update[1]}}
+                                <b-badge variant="primary">
+                                    {{ getDay(v.date) }}d{{ ((index + 1).toString().padStart(4, "0")) }}
+                                </b-badge>
+                                {{ update[1] }}
                             </template>
                         </li>
                     </ul>
@@ -20,8 +24,8 @@
                     <div class="my-2">Исправления:</div>
                     <ul>
                         <li v-for="(update,index) of v.fixes" :key="update[0]+v.version+'fix'+index">
-                            <b-badge variant="warning">{{update[0]}}</b-badge>
-                            {{update[1]}}
+                            <b-badge variant="warning">{{ update[0] }}</b-badge>
+                            {{ update[1] }}
                         </li>
                     </ul>
                 </template>
@@ -29,8 +33,9 @@
                     <div class="my-2">Ошибки:</div>
                     <ul>
                         <li v-for="(update, index) of v.bags" :key="update[0]+v.version+'bag'+index">
-                            <b-badge variant="danger">{{update[0]}}e{{((index+1).toString().padStart(4, "0"))}}</b-badge>
-                            {{update[1]}}
+                            <b-badge variant="danger">{{ getDay(v.date) }}e{{ ((index + 1).toString().padStart(4, "0")) }}
+                            </b-badge>
+                            {{ update[1] }}
                         </li>
                     </ul>
                 </template>
@@ -154,16 +159,29 @@
 </template>
 
 <script>
-    import {VERSION_LOGS} from "@/app/VersionsLogger";
+import {VERSION_LOGS} from "@/app/VersionsLogger";
 
-    export default {
-        name: "VersionsPage",
-        data() {
-            return {
-                versions: VERSION_LOGS,
-            }
+export default {
+    name: "VersionsPage",
+    data() {
+        return {
+            versions: VERSION_LOGS,
+        }
+    },
+    methods: {
+        getDay(dateString) {
+            const pts = dateString.split(".").map(v => parseInt(v));
+
+            const date = new Date(2020, 4, 18);
+            const cd = date.getTime();
+
+            const date2 = new Date(pts[2], pts[1] - 1, pts[0]);
+            const cd2 = date2.getTime();
+
+            return Math.round((cd2 - cd) / (1000 * 60 * 60 * 24));
         }
     }
+}
 </script>
 
 <style scoped>
