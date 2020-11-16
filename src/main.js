@@ -20,6 +20,7 @@ import GuildScoreRatingPage from "./components/pages/GuildScore/GuildScoreRating
 import DevelopPage from "./components/pages/DevelopPage";
 import Vuex from "vuex";
 import BlizzardAuthService from "@/modules/Login/service/BlizzardAuthService";
+import {apiStore} from "@/modules/API/store";
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
@@ -33,6 +34,9 @@ const store = new Vuex.Store({
         authToken: '',
         userId: 0,
         battletag: '',
+    },
+    modules:{
+      apiStore,
     },
     getters: {
         authCode: state => state.authCode,

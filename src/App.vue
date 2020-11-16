@@ -1,11 +1,12 @@
 <template>
     <div id="app">
+        <APILoader />
         <navigation-bar></navigation-bar>
         <player-modal></player-modal>
         <loader-screen ref="loader"></loader-screen>
         <div class="main-content">
             <div class="logo-content">
-                <div class="main-title">Престиж</div>
+                <div class="main-title">{{$store.getters["guild/name"]}}</div>
                 <div class="sub-title">Гильдия World Of Warcraft</div>
                 <sub-menu></sub-menu>
             </div>
@@ -28,10 +29,12 @@
     import NavigationBar from "@/components/navigation/NavigationBar";
     import PlayerModal from "./components/player/PlayerModal";
     import UIPlayerOverlay from "./app/UIPlayerOverlay";
+    import APILoader from "@/modules/API/compopents/APILoader";
 
     export default {
         name: 'App',
         components: {
+            APILoader,
             PlayerModal,
             NavigationBar,
             SubMenu,
@@ -39,7 +42,9 @@
         },
         async mounted() {
 
-            await Guild.shared.updateGuild(this.$refs.loader.updateBar.bind(this));
+            await this.$store.dispatch("guild/updateGuildInfo");
+            await this.$store.dispatch("players/updatePlayers");
+
             await Guild.shared.updatePlayers(this.$refs.loader.updateBar.bind(this));
             await Guild.shared.updateMythic(this.$refs.loader.updateBar.bind(this));
             this.$refs.loader.display(false);

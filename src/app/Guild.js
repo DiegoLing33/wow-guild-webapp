@@ -2,6 +2,7 @@ import API from "@/app/API";
 import Player from "./entities/Player";
 import Mythic from "@/app/entities/Mythic";
 import PlayersButch from "@/app/butches/PlayersButch";
+import {GuildAPI} from "prestij.xyz-api";
 
 export default class Guild {
 
@@ -80,7 +81,14 @@ export default class Guild {
         return Object.keys(this.players);
     }
 
-    apply(data) {
+    /**
+     * @param {[]} source
+     */
+    apply(source) {
+        let data = {};
+        if(source && source instanceof Array) source.forEach(k => data[k.field] = k.value);
+        else if(source && (!(source instanceof API))) data = source;
+
         this.gid = data.gid || 0;
         this.name = data.name || "Undefined";
         this.achievement_points = data.achievement_points || 0;
@@ -152,7 +160,7 @@ export default class Guild {
 
     async updateGuild(callback) {
         callback(0, 1, "Получение данных о гильдии...");
-        this.apply(await API.guild());
+        this.apply(await GuildAPI.GetGuild());
         this.isGuildLoaded = true;
     }
 

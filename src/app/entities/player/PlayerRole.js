@@ -32,6 +32,15 @@ export default class PlayerRole {
         return SPECIALIZATIONS_ROLES[specializationId];
     }
 
+    /**
+     * Returns the role by role
+     * @param {number} role
+     * @return {PlayerRole}
+     */
+    static getByRole(role) {
+        return PlayerRole[role];
+    }
+
     constructor({id, title, image} = {}) {
         /**
          * The role id

@@ -1,14 +1,13 @@
 <template>
-    <div :class="([getClassSlugColor, 'player-name'].join(' '))">
+    <div :class="([color, 'player-name'].join(' '))">
             <span @click="click()" class="player-click">
-                <img :src="player.role.image">
+                <img :src="image" alt="Role">
                 <span :class="(player.fromGuild <= 0 ? 'no-guild' : '')">{{player.name}}</span>
             </span> <span v-if="gear && player.gear > 0">({{player.gear}})</span>
     </div>
 </template>
 
 <script>
-    import Player from "../../app/entities/Player";
     import PlayerClass from "../../app/entities/player/PlayerClass";
     import UIPlayerOverlay from "../../app/UIPlayerOverlay";
 
@@ -16,7 +15,7 @@
         name: "PlayerName",
         props: {
             player: {
-                type: Player,
+                type: Object,
                 required: true,
             },
             tooltip: {
@@ -36,9 +35,20 @@
             },
         },
         computed: {
-            getClassSlugColor() {
-                return PlayerClass.getSlugBySpecializationId(this.player.specialization.id);
+            color() {
+                return PlayerClass.getSlugByByClassId(this.player.character_class.wow_id);
             },
+            image(){
+                const type = this.player.character_spec.type;
+                switch (type){
+                    default:
+                    case 0: return require("@/assets/types/noone.svg");
+                    case 1: return require("@/assets/types/security.svg");
+                    case 2: return require("@/assets/types/health.svg");
+                    case 3: return require("@/assets/types/sword.svg");
+                    case 4: return require("@/assets/types/bow-and-arrow.svg");
+                }
+            }
         },
         methods: {
             click() {

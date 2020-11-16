@@ -2,13 +2,12 @@
     <div>
         <b-container>
             <b-card class="mb-3" bg-variant="primary">
-                <!--            //https://discord.gg/8rhXHj8uDm-->
                 <a target="_blank" class="gd" href='https://discord.gg/8rhXHj8uDm'>
                     <div class="guild_ds">
                         <img class="guild_image" :src="guild_logo"/>
                         <div class="guild_text pl-3">
                             Присоединиться к Discord
-                            <div class="small">@Престиж</div>
+                            <div class="small">@{{$store.getters["guild/name"]}}</div>
                         </div>
                     </div>
                 </a>
@@ -18,13 +17,13 @@
                     <h2>Достижения</h2>
                     <div class="my-3 text-muted">Очки достижений</div>
                     <img :src="achievement" alt="Достижения">
-                    <h3>{{ guild.achievement_points }}</h3>
+                    <h3>{{ $store.getters["guild/achievementPoints"] }}</h3>
                 </b-card>
                 <b-card @click="$router.push('/players')" class="info-item mb-3 sector-item">
                     <h2>Игроки</h2>
                     <div class="my-3 text-muted">Количество игроков</div>
                     <img :src="antique" alt="Игроков">
-                    <h3>{{ guild.playersCount }}</h3>
+                    <h3>{{ $store.getters["guild/playersCount"] }}</h3>
                 </b-card>
             </b-card-group>
 
@@ -34,22 +33,22 @@
                     <div class="my-3 text-muted">Герой недели</div>
                     <img :src="medal" alt="MVGP">
                     <h3 class="mvgp-go">
-                        <player-name :player="mvgp" :linked="false"></player-name>
+<!--                        <player-name :player="mvgp" :linked="false"></player-name>-->
                         ({{ mvgp.guildScore.thisWeek }})
                     </h3>
                 </b-card>
                 <b-card class="info-item mb-3">
                     <h2>Активность</h2>
-                    <div class="my-3 text-muted">Активность игроков {{ guild.name }}</div>
+                    <div class="my-3 text-muted">Активность игроков {{ $store.getters["guild/name"] }}</div>
                     <img :src="rating" alt="Guild score гильдии">
                     <h3>{{ guild.guildScore.all }}</h3>
                 </b-card>
             </b-card-group>
 
             <b-card title="Информация">
-                <div><b>Название:</b> {{ guild.name }}</div>
-                <div><b>Очки достижений:</b> {{ guild.achievement_points }}</div>
-                <div><b>Участников:</b> {{ guild.playersCount }}</div>
+                <div><b>Название:</b> {{$store.getters["guild/name"]}}</div>
+                <div><b>Очки достижений:</b> {{$store.getters["guild/achievementPoints"]}}</div>
+                <div><b>Участников:</b> {{$store.getters["guild/playersCount"]}}</div>
                 <div><b>Дата создания:</b> {{ created }}</div>
             </b-card>
         </b-container>
@@ -62,16 +61,15 @@ import antique from "@/assets/antique.svg";
 import medal from "@/assets/medal.svg";
 import rating from "@/assets/rating.svg";
 import Guild from "@/app/Guild";
-import PlayerName from "../player/PlayerName";
 import Player from "../../app/entities/Player";
 import guild_logo from "@/assets/guild-logo.png";
 
 export default {
     name: "IndexPage",
-    components: {PlayerName},
+    components: {},
     computed: {
         created() {
-            const date = new Date(this.guild.created);
+            const date = new Date(this.$store.getters["guild/createdTimestamp"] * 1);
             return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}, в ${date.toLocaleTimeString()}`;
         },
     },
