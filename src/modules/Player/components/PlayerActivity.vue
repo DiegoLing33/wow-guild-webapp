@@ -25,7 +25,7 @@ export default {
                 (this.player.guildScore.thisWeek || 0);
             const dif = total / Guild.shared.maxActivity;
             this.proc = (Math.round(dif * 10000) / 100) + "%";
-            return Math.round(dif);
+            return dif;
         },
     }
 }

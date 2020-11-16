@@ -3,7 +3,7 @@ export default class BlizzardAuthService {
     static clientId = "b737a74e00f54587b08026e2986dc334";
     static url = 'https://eu.battle.net/oauth/authorize';
     static urlToken = 'https://eu.battle.net/oauth/token';
-    static redirectUrl = 'http://localhost:8080'
+    static redirectUrl = 'http://prestij.xyz'
 
     /**
      * Returns the API url with region and postfix
