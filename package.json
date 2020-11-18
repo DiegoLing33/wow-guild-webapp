@@ -16,7 +16,7 @@
     "jest": "^26.0.1",
     "md5": "^2.2.1",
     "node-sass": "^5.0.0",
-    "prestij.xyz-api": "/Users/diego/Develop/WebstormProjects/prestij.xyz-api",
+    "prestij.xyz-api": "1.0.8",
     "sass-loader": "^10.0.5",
     "vue": "^2.6.11",
     "vue-chartjs": "latest",

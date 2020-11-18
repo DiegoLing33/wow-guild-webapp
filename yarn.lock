@@ -7853,8 +7853,10 @@ prepend-http@^1.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
 
-"prestij.xyz-api@file:../../Develop/WebstormProjects/prestij.xyz-api":
-  version "1.0.3"
+prestij.xyz-api@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/prestij.xyz-api/-/prestij.xyz-api-1.0.8.tgz#0814b241627dc94e7033a8aafd2a7ad68c8ccde3"
+  integrity sha512-Io8m9EABr+9AtUOGWcbc1HKCVBKaQ3aGRMdFGNYr4v/z9P1TcT0vPXXeu0QFpqHEbcVvYDqN4Dr7M5DWQhpjpg==
   dependencies:
     typescript "^4.0.5"
 

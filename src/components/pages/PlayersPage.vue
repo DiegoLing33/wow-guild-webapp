@@ -2,35 +2,43 @@
     <div>
         <b-container>
             <players-table-filter :handler="handleFilterChanges" class="mb-3"></players-table-filter>
+            <BCard title="Фильтры">
+                <BCardBody>
+                    <BRow>
+                        <BCol>
+                            <h4>Расса</h4>
+                            <BCheckboxGroup v-model="selectedRaces">
+                                <BCheckbox :key="id" :value="id" v-for="(text, id) in racesList">
+                                    {{ text }}
+                                </BCheckbox>
+                            </BCheckboxGroup>
+                        </BCol>
+                        <BCol>
+                            <h4>Класс</h4>
+                            <BCheckboxGroup v-model="selectedClasses">
+                                <BCheckbox :key="id" :value="id" v-for="(text, id) in classesList">
+                                    {{ text }}
+                                </BCheckbox>
+                            </BCheckboxGroup>
+                        </BCol>
+                    </BRow>
+                </BCardBody>
+            </BCard>
             <div class="my-3">
-                Отображено результатов: <b>{{ items.length }}</b>
+                Отображено результатов: <b>{{ guildPlayers.length }}</b>
             </div>
             <b-table :busy="busy" bordered :items="guildPlayers" :fields="fields">
-                <template v-slot:cell(name)="row">
+                <template v-slot:cell(raw.name)="row">
                     <player-name :player="row.item"></player-name>
                 </template>
-<!--                <template v-slot:cell(rank.id)="row">-->
-<!--                    {{ row.item.rank.title }}-->
-<!--                </template>-->
-<!--                <template v-slot:cell(class)="row">-->
-<!--                    {{ row.item.class.title }}-->
-<!--                </template>-->
-<!--                <template v-slot:cell(spec)="row">-->
-<!--                    <img class="spec-image" :src="row.item.role.image"/>-->
-<!--                    {{ row.item.specialization.title }}-->
-<!--                </template>-->
-<!--                <template v-slot:cell(gear)="row">-->
-<!--                    {{ row.item.gear }}-->
-<!--                </template>-->
-<!--                <template v-slot:cell(activity)="row">-->
-<!--                    <player-activity :player="row.item"/>-->
-<!--                </template>-->
-<!--                <template v-slot:cell(realname)="row">-->
-<!--                    {{ row.item.raw.realname }}-->
-<!--                </template>-->
-<!--                <template v-slot:cell(name)>-->
-
-<!--                </template>-->
+                <template v-slot:cell(activity)="row" style="vertical-align: center">
+                    <b-progress
+                        :title="`Активность: ${progressPoints(row.item)}`"
+                        v-b-tooltip.hover
+                        max="1"
+                        :value="progress(row.item)"
+                    />
+                </template>
             </b-table>
             <margin top="20" bottom="20" class="text-muted">
                 Мета информация:
@@ -50,11 +58,23 @@ import PlayersButch from "@/app/butches/PlayersButch";
 import Margin from "@/components/utils/Margin";
 import PlayerName from "@/components/player/PlayerName";
 
+function retype(i){
+    if(i === 0) return '?';
+    if(i === 1) return 'Т';
+    if(i === 2) return 'Х';
+    if(i === 3) return 'МД';
+    if(i === 4) return 'РД';
+}
+
 export default {
     name: "PlayersPage",
     components: {PlayerName, PlayersTableFilter, Margin},
     data() {
         return {
+            selectedRaces: null,
+            selectedClasses: null,
+            selectedRole: null,
+
             busy: false,
             metaText: '...',
             items: [],
@@ -75,55 +95,74 @@ export default {
                 swords
             },
             fields: [
-                {key: "level", label: "Уровень", sortable: true},
-                {key: "name", label: "Имя"},
-                {key: "role.title", label: "Ранг", sortable: true},
-                {key: "character_class.title", label: "Класс"},
-                // {key: "activity", label: "Активность", sortable: true},
-                {key: "meta_text", label: "Заметка", sortable: true}
+                {key: "raw.level", label: "Уровень", sortable: true},
+                {key: "raw.name", label: "Имя"},
+                {key: "raw.gear", label: "Gear"},
+                {key: "raw.role.title", label: "Ранг", sortable: true},
+                {key: "raw.character_class.title", label: "Класс"},
+                {key: "activity", label: "Активность", sortable: true},
+                {key: "raw.meta_text", label: "Заметка", sortable: true}
             ]
         }
     },
     mounted() {
 
     },
-    computed:{
-        guildPlayers(){
-            const players = this.$store.getters["players/players"];
-            console.log(players);
-            return players.sort((a, b) => a.role.role_index - b.role.role_index);
+    computed: {
+        allPlayers() {
+            return this.$store.getters["players/players"];
         },
-        countedMetaData(){
+        guildPlayers() {
+            let players = this.allPlayers;
+
+            const isRaceFilter = this.selectedRaces !== null && this.selectedRaces.length > 0;
+            const races = isRaceFilter ? this.selectedRaces.map(v => parseInt(v)) : [];
+
+            const isClassFilter = this.selectedClasses !== null && this.selectedClasses.length > 0;
+            const classes = isClassFilter ? this.selectedClasses.map(v => parseInt(v)) : [];
+
+            players = players.filter(player => {
+                if (isRaceFilter && !races.includes(player.getRace().getWID())) return false;
+                if (isClassFilter && !classes.includes(player.getClass().getWID())) return false;
+                return true;
+            });
+            return players.sort((a, b) => a.getGuildRank().getIndex() - b.getGuildRank().getIndex());
+        },
+        countedMetaData() {
             let metaContent = '';
-            this.guildPlayers.forEach(player => {
-                metaContent += player.name + '-Гордунни|';
-                metaContent += player.character_spec.type + '-' + Math.floor(player.gear) + " ";
-                if (player.meta_text) metaContent += `(${player.meta_text})`;
+            this.allPlayers.forEach(player => {
+                metaContent += player.getName() + '-Гордунни|';
+                metaContent += retype(player.getActiveSpec().getType()) + '-' + Math.floor(player.getGear()) + " ";
+                if (player.getMetaText()) metaContent += `(${player.getMetaText()})`;
                 metaContent += "\n";
             });
             return metaContent;
+        },
+
+        racesList() {
+            const list = {};
+            this.allPlayers.forEach(player => {
+                list[player.getRace().getWID()] = player.getRace().getTitle();
+            });
+            return list;
+        },
+
+        classesList() {
+            const list = {};
+            this.allPlayers.forEach(player => {
+                list[player.getClass().getWID()] = player.getClass().getTitle();
+            });
+            return list;
         }
     },
     methods: {
-        applyTable() {
-            this.busy = true;
-            // this.items = Guild.shared.createPlayersButch()
-            //     .filter(
-            //         ...this.filter.specs,
-            //         ...this.filter.etc
-            //     )
-            //     .sort(
-            //         PlayersButch.Sorting.FIRST_HIGH_RANK,
-            //         PlayersButch.Sorting.FIRST_HIGH_LEVEL,
-            //         PlayersButch.Sorting.ALPHABETIC
-            //     )
-            //     .getButchWithName(this.filter.name);
-
-            this.busy = false;
+        progress(item) {
+            return this.$store.getters['players/activity/byWID'](item.raw.wow_id).raw.activity;
         },
-
-        countMetaData() {
-
+        progressPoints(item) {
+            const p = Math.round(this.$store.getters['players/activity/byWID'](item.raw.wow_id).raw.activity * 100);
+            const points = this.$store.getters['players/activity/byWID'](item.raw.wow_id).raw.activity_points;
+            return `${points} (${p}%)`;
         },
 
         handleFilterChanges(specs, etc, name) {
@@ -141,5 +180,9 @@ textarea {
     background-color: #2a2a2a !important;
     border-color: #16181b !important;
     color: #b5b5b5 !important;
+}
+
+td{
+    vertical-align: middle !important;
 }
 </style>

@@ -1,14 +1,16 @@
 <template>
     <div class="frame" :hidden="!$store.getters.shouldLoaderDisplay">
-        <div class="m-title">Престиж</div>
-        <div class="s-title">Получение данных World Of Warcraft</div>
-        <div class="loader-text">
-            {{ $store.getters.loaderText }} {{ $store.getters.loaderCurrent }} / {{ $store.getters.loaderMax }}
+        <div class="f-line">
+            <div class="m-title">Престиж</div>
+            <div class="s-title">Получение данных World Of Warcraft</div>
+            <div class="loader-text">
+                {{ $store.getters.loaderText }} {{ $store.getters.loaderCurrent }} / {{ $store.getters.loaderMax }}
+            </div>
+            <b-progress
+                :max="$store.getters.loaderMax"
+                :value="$store.getters.loaderCurrent"
+                animated></b-progress>
         </div>
-        <b-progress
-            :max="$store.getters.loaderMax"
-            :value="$store.getters.loaderCurrent"
-            animated></b-progress>
     </div>
 </template>
 
@@ -82,7 +84,7 @@ export default {
     right: 15px;
     width: 400px;
     background-color: #16181b;
-    padding: 15px;
+    padding: 1px;
     box-shadow: 1px 1px 7px rgba(0, 0, 0, 0.5);
 
     -webkit-animation: blink 2s infinite;
@@ -90,6 +92,11 @@ export default {
     -o-animation: blink 2s infinite;
     animation: blink 2s infinite;
     z-index: 99999;
+}
+
+.f-line {
+    border-top: 1px solid #222222;
+    padding: 13px;
 }
 
 .m-title {

@@ -41,7 +41,7 @@
                     <h2>Активность</h2>
                     <div class="my-3 text-muted">Активность игроков {{ $store.getters["guild/name"] }}</div>
                     <img :src="rating" alt="Guild score гильдии">
-                    <h3>{{ guild.guildScore.all }}</h3>
+                    <h3>{{ $store.getters["players/activity/maxActivity"] }}</h3>
                 </b-card>
             </b-card-group>
 

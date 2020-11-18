@@ -2,8 +2,8 @@
     <div :class="([color, 'player-name'].join(' '))">
             <span @click="click()" class="player-click">
                 <img :src="image" alt="Role">
-                <span :class="(player.fromGuild <= 0 ? 'no-guild' : '')">{{player.name}}</span>
-            </span> <span v-if="gear && player.gear > 0">({{player.gear}})</span>
+                <span :class="(player.fromGuild <= 0 ? 'no-guild' : '')">{{player.getName()}}</span>
+            </span> <span v-if="gear && player.getGear() > 0">({{player.getGear()}})</span>
     </div>
 </template>
 
@@ -36,10 +36,10 @@
         },
         computed: {
             color() {
-                return PlayerClass.getSlugByByClassId(this.player.character_class.wow_id);
+                return PlayerClass.getSlugByByClassId(this.player.getClass().getWID());
             },
             image(){
-                const type = this.player.character_spec.type;
+                const type = this.player.getActiveSpec().getType();
                 switch (type){
                     default:
                     case 0: return require("@/assets/types/noone.svg");
