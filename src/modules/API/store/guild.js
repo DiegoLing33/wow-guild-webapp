@@ -25,18 +25,16 @@ export const guildStore = {
     },
     mutations: {
         updateData(state, payload) {
-            const data = {};
-            payload.forEach(k => data[k.field] = k.value);
 
-            state.guildName = data['guild_name'] || 'Unnamed';
-            state.guildPlayersCount = data['players'] || 0;
-            state.guildCreatedTimestamp = data['created_timestamp'] || 0;
+            state.guildName = payload['guild_name'] || 'Unnamed';
+            state.guildPlayersCount = payload['players'] || 0;
+            state.guildCreatedTimestamp = payload['created_timestamp'] || 0;
 
-            state.guildFactionName = data['faction_name'] || 'Alirda?';
-            state.guildAchievementPoints = data['achievement_points'] || 0;
+            state.guildFactionName = payload['faction_name'] || 'Alirda?';
+            state.guildAchievementPoints = payload['achievement_points'] || 0;
 
-            state.guildCrestEmblemUrl = data['crest_emblem_url'] || '';
-            state.guildCrestBackgroundColor = data['crest_background_color'] || '';
+            state.guildCrestEmblemUrl = payload['crest_emblem_url'] || '';
+            state.guildCrestBackgroundColor = payload['crest_background_color'] || '';
         },
     },
     actions: {
@@ -47,7 +45,7 @@ export const guildStore = {
          */
         updateGuildInfo({commit}) {
             commit("loader", {max: 1, current: 0, text: 'Получение данных о гильдии: '}, {root: true});
-            GuildAPI.GetGuild().then(value => {
+            GuildAPI.GetGuildObject().then(value => {
                 commit("updateData", value);
                 commit("loader", {max: 1, current: 1, text: 'Получение данных о гильдии: '}, {root: true});
             });

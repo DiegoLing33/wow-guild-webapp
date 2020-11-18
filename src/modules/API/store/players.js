@@ -1,4 +1,5 @@
 import {GuildAPI} from "prestij.xyz-api";
+import {playersActivityStore} from "@/modules/API/store/playersActivity";
 
 export const playersStore = {
     namespaced: true,
@@ -19,5 +20,8 @@ export const playersStore = {
             });
             commit("setPlayers", players);
         }
-    }
+    },
+    modules: {
+        activity: playersActivityStore,
+    },
 };

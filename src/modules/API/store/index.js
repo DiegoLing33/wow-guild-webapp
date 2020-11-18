@@ -10,6 +10,7 @@ export const apiStore = {
         loaderMax: 1,
         loaderCurrent: 1,
         loaderText: '',
+        loaderEnds: false,
     }),
     getters: {
         loaderMax: s => s.loaderMax,
@@ -25,6 +26,7 @@ export const apiStore = {
             state.loaderMax = payload.max;
             state.loaderCurrent = payload.current;
             state.loaderText = payload.text;
+            state.loaderEnds = state.loaderCurrent >= state.loaderMax;
         }
     }
 };
