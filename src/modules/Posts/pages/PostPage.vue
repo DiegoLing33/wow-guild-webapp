@@ -22,7 +22,7 @@
                         </b-dropdown>
                     </BCardTitle>
                     <div class="description">
-                        {{ post.getCreatedString() }} - {{ post.getUser().getBlizzardName() }}
+                        {{ post.getCreatedString() }} - {{ post.getUser().getBlizzardName().split('#')[0] }}
                     </div>
                 </BCardHeader>
                 <BCardBody class="content-h" v-html="post.raw.content" />

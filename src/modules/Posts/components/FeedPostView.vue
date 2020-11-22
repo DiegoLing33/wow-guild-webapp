@@ -38,7 +38,7 @@
             </div>
             <div class="author_div button_item">
                 <img class="img_item" :src="require('../assets/user.svg')" alt=""/>
-                <div class="author_text">{{ user.getBlizzardName() }}</div>
+                <div class="author_text">{{ user.getBlizzardName().split('#')[0] }}</div>
             </div>
         </div>
     </div>
