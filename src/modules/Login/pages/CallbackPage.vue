@@ -1,6 +1,6 @@
 <template>
     <div>
-        callback
+        Redirecting...
     </div>
 </template>
 
@@ -9,8 +9,8 @@ export default {
     name: "CallbackPage",
     mounted() {
 
-        this.$store.dispatch("initLogin").then(value => {
-            console.log(value);
+        this.$store.dispatch("initLogin").then(() => {
+            this.$router.push('/');
         });
 
     }

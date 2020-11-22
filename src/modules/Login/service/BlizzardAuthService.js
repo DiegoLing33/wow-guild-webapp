@@ -1,7 +1,7 @@
 export default class BlizzardAuthService {
 
-    static clientId = "1cd5dc7b1d8546d59212758d2a326c34";
-    static clientSecret = "3XG0PL5yLUF33LXDNqQrR1tLg49wGfdc";
+    static clientId = "b737a74e00f54587b08026e2986dc334";
+    static clientSecret = "szO2aKt1L1qGHdEF8dnB0GmUbb8iKXXB";
 
     static url = 'https://eu.battle.net/oauth/authorize';
     static urlToken = 'https://eu.battle.net/oauth/token';
