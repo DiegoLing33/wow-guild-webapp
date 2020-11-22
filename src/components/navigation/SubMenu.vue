@@ -8,9 +8,9 @@
             <img :src="warriors" alt="Игроки">
             <div>Игроки</div>
         </div>
-        <div class="sub-menu-item" @click="$router.push('/mythic')">
-            <img :src="dungeon" alt="Mythic+">
-            <div>Mythic+</div>
+        <div class="sub-menu-item" @click="$router.push('/posts')">
+            <img :src="require('./news.svg')" alt="News">
+            <div>Новости</div>
         </div>
         <div class="sub-menu-item"  @click="$router.push('/versions')">
             <img :src="log" alt="Версии">

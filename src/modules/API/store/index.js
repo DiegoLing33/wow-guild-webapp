@@ -17,14 +17,14 @@ export const apiStore = {
         loaderCurrent: s => s.loaderCurrent,
         loaderText: s => s.loaderText,
 
-        shouldLoaderDisplay() {
-            return true
+        shouldLoaderDisplay(state) {
+            return state.loaderCurrent < state.loaderMax
         }
     },
     mutations: {
         loader(state, payload) {
-            state.loaderMax = payload.max;
-            state.loaderCurrent = payload.current;
+            state.loaderMax = payload.max ?? 1;
+            state.loaderCurrent = payload.current ?? 0;
             state.loaderText = payload.text;
             state.loaderEnds = state.loaderCurrent >= state.loaderMax;
         }

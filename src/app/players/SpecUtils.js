@@ -6,7 +6,7 @@ import bow from "@/assets/types/bow-and-arrow.svg";
 export default class SpecUtils {
 
     /**
-     * Returns the spec image
+     * Returns the spec postImage
      * @param specTypeId
      */
     static getImage(specTypeId) {

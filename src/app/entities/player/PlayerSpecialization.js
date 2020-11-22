@@ -9,7 +9,7 @@ export default class PlayerSpecialization {
         this.id = id;
 
         /**
-         * The player specialization title
+         * The player specialization postTitle
          */
         this.title = name;
     }

@@ -8,8 +8,8 @@
                 Гильдейский марш: {{counters.guildRace}} ({{getPercentage(counters.guildRace, items.length)}})
             </div>
         </div>
-        <b-card-group class="mb-4" deck v-for="(m, i) in groups" :key="m.map(v=>v.id).join('_')">
-            <mythic-card v-for="item in m" :key="`${item.mythicHash}_${i}`" :mythic-hash="item.mythicHash" :mythic="item">
+        <b-card-group class="mb-4" deck v-for="(m, i) in groups" :key="i">
+            <mythic-card v-for="item in m" :key="`${item.raw.mythic_hash}_${i}`" :mythic-hash="item.raw.mythic_hash" :mythic="item">
             </mythic-card>
         </b-card-group>
         <template v-if="items.length-limit>0">
@@ -50,8 +50,8 @@
             applyFilters(filters) {
                 this.items = this.items.filter(m => {
                     if (!m.thisWeek && filters.includes("week")) return false;
-                    if (m.isDone && !filters.includes("done")) return false;
-                    if (!m.isDone && !filters.includes("broken")) return false;
+                    if (m.isDone() && !filters.includes("done")) return false;
+                    if (!m.isDone() && !filters.includes("broken")) return false;
                     if (m.isGuildRace() && !filters.includes("guild")) return false;
                     if (!m.isGuildRace() && !filters.includes("lfr")) return false;
                     return true;
@@ -59,33 +59,33 @@
             },
             applyPlayersFilter(players) {
                 this.items = this.items.filter(m => {
-                    return players.every(player => m.players.find(v => v.name === player));
+                    return players.every(player => m.getMembers().find(v => v.getName() === player));
                 });
             },
             applySortMethods(sortA, sortB) {
                 if (sortA === "dungeon") this.items = this.items.sort((a, b) => {
-                    return a.level > b.level ? -1 : 1;
+                    return a.getLevel() > b.getLevel() ? -1 : 1;
                 });
                 this.items = this.items.sort((a, b) => {
-                    if (sortA === "new") return a.completed > b.completed ? -1 : 1;
-                    if (sortA === "old") return a.completed < b.completed ? -1 : 1;
-                    if (sortA === "fast") return a.doneInTime < b.doneInTime ? -1 : 1;
-                    if (sortA === "long") return a.doneInTime > b.doneInTime ? -1 : 1;
+                    if (sortA === "new") return a.raw.completed > b.raw.completed ? -1 : 1;
+                    if (sortA === "old") return a.raw.completed < b.raw.completed ? -1 : 1;
+                    if (sortA === "fast") return a.getDurationInSeconds() < b.getDurationInSeconds() ? -1 : 1;
+                    if (sortA === "long") return a.getDurationInSeconds() > b.getDurationInSeconds() ? -1 : 1;
 
-                    if (sortA === "hard") return a.level > b.level ? -1 : 1;
-                    if (sortA === "easy") return a.level < b.level ? -1 : 1;
-                    if (sortA === "dungeon") return parseInt(a.dungeon.id) < parseInt(b.dungeon.id) ? -1 : 1;
-                    return a.completed > b.completed ? -1 : 1;
+                    if (sortA === "hard") return a.getLevel() > b.getLevel() ? -1 : 1;
+                    if (sortA === "easy") return a.getLevel() < b.getLevel() ? -1 : 1;
+                    if (sortA === "dungeon") return parseInt(a.getWowDungeonID()) < parseInt(b.getWowDungeonID()) ? -1 : 1;
+                    return a.raw.completed > b.raw.completed ? -1 : 1;
                 });
                 if (sortB === "done") {
                     this.items = [
-                        ...this.items.filter(m => m.isDone),
-                        ...this.items.filter(m => !m.isDone),
+                        ...this.items.filter(m => m.isDone()),
+                        ...this.items.filter(m => !m.isDone()),
                     ];
                 } else if (sortB === "broken") {
                     this.items = [
-                        ...this.items.filter(m => !m.isDone),
-                        ...this.items.filter(m => m.isDone)
+                        ...this.items.filter(m => !m.isDone()),
+                        ...this.items.filter(m => m.isDone())
                     ];
                 }
             },
@@ -93,7 +93,7 @@
                 this.counters.doneInTime = 0;
                 this.counters.guildRace  = 0;
                 this.items.forEach(m => {
-                    if (m.isDone) this.counters.doneInTime++;
+                    if (m.isDone()) this.counters.doneInTime++;
                     if (m.isGuildRace()) this.counters.guildRace++;
                 });
             },

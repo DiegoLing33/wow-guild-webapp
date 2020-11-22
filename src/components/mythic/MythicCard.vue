@@ -1,15 +1,15 @@
 <template>
     <b-card
             :border-variant="borderVariant" no-body :footer="formattedDate"
-            :header="(`${mythic.dungeon.name} (${mythic.level})`)">
+            :header="(`${mythic.getName()} (${mythic.getLevel()})`)">
         <b-card-body>
-            <b-badge v-if="mythic.isDone" variant="success">В ТАЙМ: {{mythic.doneInTimeFormat}}</b-badge>
-            <b-badge v-else variant="danger">НЕ В ТАЙМ: {{mythic.doneInTimeFormat}}</b-badge>
+            <b-badge v-if="mythic.isDone()" variant="success">В ТАЙМ: {{mythic.getDurationString()}}</b-badge>
+            <b-badge v-else variant="danger">НЕ В ТАЙМ: {{mythic.getDurationString()}}</b-badge>
         </b-card-body>
         <div class="mt-2">
             <mythic-card-players
-                    :players="mythic.players"
-                    :mythic-hash="mythic.mythicHash">
+                    :players="mythic.getMembers()"
+                    :mythic-hash="mythic.getMythicHash()">
             </mythic-card-players>
             <b-card-body>
                 <slot></slot>
@@ -18,17 +18,12 @@
                         variant="warning" style="cursor: pointer; user-select: none"
                         v-b-popover.hover.top="affixes">Аффиксы
                 </b-badge>
-                <b-badge
-                        v-if="mythic.thisWeek"
-                        class="mr-2"
-                        variant="primary" style="cursor: pointer; user-select: none"
-                        v-b-popover.hover.top="'Подземелье пройдено на этой недели'">Неделя
-                </b-badge>
-                <b-badge
-                        variant="info" style="cursor: pointer; user-select: none"
-                        v-b-popover.hover.top="'Очки Guild Score, которые заработали участники прохождения'">
-                    +{{mythic.guildScore}} GS
-                </b-badge>
+<!--                <b-badge-->
+<!--                        v-if="mythic.thisWeek"-->
+<!--                        class="mr-2"-->
+<!--                        variant="primary" style="cursor: pointer; user-select: none"-->
+<!--                        v-b-popover.hover.top="'Подземелье пройдено на этой недели'">Неделя-->
+<!--                </b-badge>-->
             </b-card-body>
         </div>
     </b-card>
@@ -36,7 +31,6 @@
 
 <script>
     import DateUtils from "@/app/utils/DateUtils";
-    import Mythic from "@/app/entities/Mythic";
     import MythicCardPlayers from "@/components/mythic/MythicCardPlayers";
 
     export default {
@@ -45,7 +39,7 @@
         props: {
             mythic: {
                 required: true,
-                type: Mythic
+                type: Object
             },
             mythicHash:{
               required: true,
@@ -53,18 +47,18 @@
             }
         },
       created() {
-          console.log(this.mythic);
+
       },
       computed: {
             affixes() {
-                return this.mythic.affixes.map(v => v.name).join(", ");
+                return this.mythic.getAffixes().map(v => v.getName()).join(", ");
             },
             formattedDate() {
-                return DateUtils.format(this.mythic.completed);
+                return DateUtils.format(this.mythic.raw.completed);
             },
             borderVariant() {
                 if (this.mythic.isGuildRace()) return "primary";
-                return this.mythic.isDone ? "success" : "danger";
+                return this.mythic.isDone() ? "success" : "danger";
             }
         },
     }

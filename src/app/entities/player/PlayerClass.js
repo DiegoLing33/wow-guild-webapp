@@ -58,7 +58,7 @@ export default class PlayerClass {
          */
         this.id = id || 0;
         /**
-         * The class title
+         * The class postTitle
          */
         this.title = name || "Undefined";
 

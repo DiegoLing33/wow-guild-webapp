@@ -12,6 +12,7 @@
                     </div>
                 </a>
             </b-card>
+            <Feed class="mt-3"></Feed>
             <b-card-group deck>
                 <b-card class="info-item mb-3">
                     <h2>Достижения</h2>
@@ -63,10 +64,11 @@ import rating from "@/assets/rating.svg";
 import Guild from "@/app/Guild";
 import Player from "../../app/entities/Player";
 import guild_logo from "@/assets/guild-logo.png";
+import Feed from "@/modules/Posts/components/Feed";
 
 export default {
     name: "IndexPage",
-    components: {},
+    components: {Feed},
     computed: {
         created() {
             const date = new Date(this.$store.getters["guild/createdTimestamp"] * 1);
@@ -128,7 +130,7 @@ export default {
 
 .guild_text {
     line-height: 1.1;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: white !important;
 
     .small {

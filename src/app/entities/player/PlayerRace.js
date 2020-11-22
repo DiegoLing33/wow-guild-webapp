@@ -9,7 +9,7 @@ export default class PlayerRace {
         this.id = id || -1;
 
         /**
-         * The player race title
+         * The player race postTitle
          */
         this.title = name || "Unknown";
     }

@@ -35,36 +35,23 @@
                             </router-link>
                         </li>
                     </b-nav-dropdown>
-                    <!--                    <b-nav-dropdown>-->
-                    <!--                        <template v-slot:button-content>-->
-                    <!--                            <img :src="medal"/>Guild Score-->
-                    <!--                        </template>-->
-                    <!--                        <li>-->
-                    <!--                            <router-link class="dropdown-item" to="/score">-->
-                    <!--                                <img :src="star"/> ТОП-5 GS-->
-                    <!--                            </router-link>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <router-link class="dropdown-item" to="/score/rating">-->
-                    <!--                                <img :src="rating"/> Общий рейтинг GS-->
-                    <!--                            </router-link>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <router-link class="dropdown-item" to="/score/calc">-->
-                    <!--                                <img :src="clipboard"/> Калькулятор GS-->
-                    <!--                            </router-link>-->
-                    <!--                        </li>-->
-                    <!--                    </b-nav-dropdown>-->
                     <router-link class="nav-item nav-link" to="/mythic"><img :src="require('@/assets/dungeon.png')"/>Mythic+</router-link>
-                    <router-link class="nav-item nav-link" to="/versions"><img :src="require('@/assets/log.svg')"/>Версии</router-link>
+                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('./addons.svg')"/>Аддоны</router-link>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <a v-if="$store.getters.battleTag === ''" class="nav-item nav-link" :href="getAuthURL()">
                         <img :src="require('@/modules/Login/resources/bnet-large.png')"/> Авторизация
                     </a>
-                    <router-link class="nav-item nav-link" to="/profile" v-else :href="getAuthURL()">
-                        <img :src="require('@/modules/Login/resources/bnet-large.png')"/> {{ $store.getters.battleTag }}
-                    </router-link>
+                    <b-nav-dropdown v-else>
+                        <template v-slot:button-content>
+                            <img :src="require('@/modules/Login/resources/bnet-large.png')"/> {{ $store.getters.battleTag }}
+                        </template>
+                        <li>
+                            <router-link class="dropdown-item" to="/post/create">
+                                <img :src="require('@/assets/checklist.svg')"/> Создать запись
+                            </router-link>
+                        </li>
+                    </b-nav-dropdown>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>

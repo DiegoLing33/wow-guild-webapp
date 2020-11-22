@@ -1,9 +1,11 @@
 export default class BlizzardAuthService {
 
-    static clientId = "b737a74e00f54587b08026e2986dc334";
+    static clientId = "1cd5dc7b1d8546d59212758d2a326c34";
+    static clientSecret = "3XG0PL5yLUF33LXDNqQrR1tLg49wGfdc";
+
     static url = 'https://eu.battle.net/oauth/authorize';
     static urlToken = 'https://eu.battle.net/oauth/token';
-    static redirectUrl = 'http://prestij.xyz'
+    static redirectUrl = 'http://localhost:8080/callback'
 
     /**
      * Returns the API url with region and postfix
@@ -74,7 +76,7 @@ export default class BlizzardAuthService {
                 redirect_uri: BlizzardAuthService.redirectUrl,
                 grant_type: 'authorization_code',
                 code: code,
-                client_secret: 'szO2aKt1L1qGHdEF8dnB0GmUbb8iKXXB'
+                client_secret: BlizzardAuthService.clientSecret,
             };
             const xhr = new XMLHttpRequest();
             xhr.onload = () => {

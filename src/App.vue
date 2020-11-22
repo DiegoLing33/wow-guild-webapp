@@ -3,7 +3,6 @@
         <APILoader/>
         <navigation-bar></navigation-bar>
         <player-modal></player-modal>
-        <loader-screen ref="loader"></loader-screen>
         <div class="main-content">
             <div class="logo-content">
                 <div class="main-title">{{ $store.getters["guild/name"] }}</div>
@@ -23,7 +22,6 @@
 
 <script>
 
-import LoaderScreen from "@/components/LoaderScreen";
 import SubMenu from "@/components/navigation/SubMenu";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import PlayerModal from "./components/player/PlayerModal";
@@ -37,16 +35,15 @@ export default {
         PlayerModal,
         NavigationBar,
         SubMenu,
-        LoaderScreen,
     },
     async mounted() {
-
+        this.$store.dispatch("initAuthorization")
         this.$store.dispatch("guild/updateGuildInfo").then(() => {
-            this.$store.dispatch("players/updatePlayers").then();
+            this.$store.dispatch("players/updatePlayers").then(() => {
+                this.$store.dispatch("mythic/update");
+            });
             this.$store.dispatch("players/activity/update").then();
         });
-
-        this.$store.dispatch("initAuthorization").then();
     },
     watch: {
         $route() {
@@ -55,6 +52,46 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+:root {
+    --class-war: rgb(199, 156, 110);
+    --class-paladin: rgb(245, 140, 186);
+    --class-hunter: rgb(169, 210, 113);
+    --class-rogue: rgb(245, 140, 186);
+    --class-priest: rgb(255, 255, 255);
+    --class-dk: rgb(196, 31, 59);
+    --class-shaman: rgb(0, 112, 222);
+    --class-mage: rgb(64, 199, 235);
+    --class-warlock: rgb(147, 130, 201);
+    --class-monk: rgb(0, 255, 150);
+    --class-druid: rgb(255, 125, 106);
+    --class-dh: rgb(163, 48, 201);
+}
+
+$p_classes: "war", "paladin", "hunter", "rogue", "priest", "dk",
+"shaman", "mage", "warlock", "monk", "druid", "dh";
+
+@each $p_c in $p_classes {
+
+    // Color styles
+    .#{$p_c} {
+        color: var(--class-#{$p_c}) !important;
+    }
+    // Border color styles
+    .#{$p_c}-bc {
+        border-color: var(--class-#{$p_c}) !important;
+    }
+    // Background color styles
+    .#{$p_c}-bg {
+        background-color: var(--class-#{$p_c}) !important;
+    }
+}
+
+.v-toast__item--error {
+    background-color: #9d0404 !important;
+}
+</style>
 
 <style>
 body {

@@ -8,11 +8,11 @@ import bow from "../../../assets/types/bow-and-arrow.svg";
  * The player role entity
  */
 export default class PlayerRole {
-    static UNDEFINED = new PlayerRole({id: 0, title: "-", image: noone});
-    static TANK = new PlayerRole({id: 1, title: "Т", image: shield});
-    static HEALER = new PlayerRole({id: 2, title: "Х", image: heal});
-    static MILLIE = new PlayerRole({id: 3, title: "МД", image: sword});
-    static RANGE = new PlayerRole({id: 4, title: "РД", image: bow});
+    static UNDEFINED = new PlayerRole({id: 0, postTitle: "-", postImage: noone});
+    static TANK = new PlayerRole({id: 1, postTitle: "Т", postImage: shield});
+    static HEALER = new PlayerRole({id: 2, postTitle: "Х", postImage: heal});
+    static MILLIE = new PlayerRole({id: 3, postTitle: "МД", postImage: sword});
+    static RANGE = new PlayerRole({id: 4, postTitle: "РД", postImage: bow});
 
     /**
      * Returns the role by specialization
@@ -48,12 +48,12 @@ export default class PlayerRole {
         this.id = id;
 
         /**
-         * The title
+         * The postTitle
          */
         this.title = title;
 
         /**
-         * The image
+         * The postImage
          */
         this.image = image;
     }

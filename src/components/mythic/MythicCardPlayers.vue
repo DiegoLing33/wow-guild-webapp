@@ -2,8 +2,10 @@
     <b-list-group flush>
         <b-list-group-item
                 @click="modal(player)"
-                :class="className(player.specialization)" v-for="(player, i) in getSortedPlayers()"
-                :key="(`${mythicHash}_${player.id}_${i}`)">
+
+                v-for="(player, i) in getSortedPlayers()"
+                :key="(`${mythicHash}_${player.raw.wow_id}_${i}`)">
+
             <player-name :player="player" :linked="false" :gear="true"></player-name>
         </b-list-group-item>
     </b-list-group>
@@ -13,7 +15,6 @@
     import PlayerName from "@/components/player/PlayerName";
     import UIPlayerOverlay from "@/app/UIPlayerOverlay";
     import PlayerClass from "@/app/entities/player/PlayerClass";
-    import PlayersButch from "@/app/butches/PlayersButch";
     export default {
         name: "MythicCardPlayers",
         components: {PlayerName},
@@ -29,13 +30,14 @@
         },
         methods: {
             getSortedPlayers(){
-                return new PlayersButch(this.players)
-                    .sort(PlayersButch.Sorting.FIRST_LOW_ROLE, PlayersButch.Sorting.ALPHABETIC)
-                    .getButch();
+                // return new PlayersButch(this.players)
+                //     .sort(PlayersButch.Sorting.FIRST_LOW_ROLE, PlayersButch.Sorting.ALPHABETIC)
+                //     .getButch();
+
+                return this.players;
             },
             modal(player) {
-                if (player.fromGuild)
-                    UIPlayerOverlay.displayPlayer(player);
+                if (player.isFromGuild()) UIPlayerOverlay.displayPlayer(player);
             },
             className(specialization) {
                 return ['user-line', PlayerClass.getSlugBySpecializationId(specialization.id)].join(' ');

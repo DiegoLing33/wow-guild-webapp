@@ -89,7 +89,7 @@ export default class Player {
         this.guildScore = new GuildScore();
 
         /**
-         * The image of players
+         * The postImage of players
          * @type {*}
          */
         this.image = null;

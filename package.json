@@ -9,19 +9,27 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-vue2": "^1.0.4",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.14.0",
     "chart.js": "latest",
+    "ckeditor4": "^4.15.1",
+    "ckeditor4-vue": "^1.2.0",
     "core-js": "^3.6.4",
+    "fast-average-color": "^6.2.0",
     "jest": "^26.0.1",
+    "js-base64": "^3.6.0",
     "md5": "^2.2.1",
     "node-sass": "^5.0.0",
-    "prestij.xyz-api": "1.0.8",
+    "prestij.xyz-api": "1.0.17``",
     "sass-loader": "^10.0.5",
+    "tinycolor2": "^1.4.2",
     "vue": "^2.6.11",
     "vue-chartjs": "latest",
-    "vue-confirm-dialog": "^1.0.2",
     "vue-router": "^3.1.6",
+    "vue-toast-notification": "^0.6.0",
+    "vue2-editor": "^2.10.2",
     "vuex": "^3.5.1"
   },
   "devDependencies": {
@@ -32,6 +40,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "quill-image-drop-module": "^1.0.3",
+    "quill-image-resize-module": "^3.0.0",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^9.0.2",
     "vue-template-compiler": "^2.6.11"

@@ -7,10 +7,10 @@
                     <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
                         <li v-for="tag in tags" :key="tag" class="list-inline-item">
                             <b-form-tag
-                                    @remove="removeTag(tag)"
-                                    :title="tag"
-                                    :disabled="disabled"
-                                    variant="info"
+                                @remove="removeTag(tag)"
+                                :title="tag"
+                                :disabled="disabled"
+                                variant="info"
                             >{{ tag }}
                             </b-form-tag>
                         </li>
@@ -23,30 +23,30 @@
                         </template>
                         <b-dropdown-form @submit.stop.prevent="() => {}">
                             <b-form-group
-                                    label-for="tag-search-input"
-                                    label="Имя игрока"
-                                    label-cols-md="auto"
-                                    class="mb-0"
-                                    label-size="sm"
-                                    :description="searchDesc"
-                                    :disabled="disabled"
+                                label-for="tag-search-input"
+                                label="Имя игрока"
+                                label-cols-md="auto"
+                                class="mb-0"
+                                label-size="sm"
+                                :description="searchDesc"
+                                :disabled="disabled"
                             >
                                 <b-form-input
-                                        :autofocus="true"
-                                        v-model="search"
-                                        id="tag-search-input"
-                                        type="search"
-                                        size="sm"
-                                        autocomplete="off"
+                                    :autofocus="true"
+                                    v-model="search"
+                                    id="tag-search-input"
+                                    type="search"
+                                    size="sm"
+                                    autocomplete="off"
                                 ></b-form-input>
                             </b-form-group>
                         </b-dropdown-form>
                         <b-dropdown-divider></b-dropdown-divider>
                         <div style="max-height: 300px; overflow-y: scroll">
                             <b-dropdown-item-button
-                                    v-for="option in availableOptions"
-                                    :key="option"
-                                    @click="onOptionClick({ option, addTag })"
+                                v-for="option in availableOptions"
+                                :key="option"
+                                @click="onOptionClick({ option, addTag })"
                             >
                                 {{ option }}
                             </b-dropdown-item-button>
@@ -62,55 +62,53 @@
 </template>
 
 <script>
-    import Guild from "@/app/Guild";
-    import StringUtils from "@/app/utils/StringUtils";
+import StringUtils from "@/app/utils/StringUtils";
 
-    export default {
-        name:     "PlayersSelectionView",
-        data() {
-            return {
-                options: [],
-                search:  '',
-                value:   []
-            }
-        },
-        watch:    {
-            value() {
-                this.$emit("selected", this.value);
-            }
-        },
-        mounted() {
-            Guild.shared.wait(this.update.bind(this));
-        },
-        computed: {
-            criteria() {
-                return this.search.trim().toLowerCase()
-            },
-            availableOptions() {
-                const criteria = this.criteria
-                const options  = this.options.filter(opt => this.value.indexOf(opt) === -1).sort((a, b) => a.localeCompare(b))
-                if (criteria) {
-                    return options.filter(opt => opt.toLowerCase().indexOf(criteria) > -1);
-                }
-                return options
-            },
-            searchDesc() {
-                if (this.criteria && this.availableOptions.length === 0) {
-                    return 'Участники гильдии не найдены по критериям запроса'
-                }
-                return ''
-            }
-        },
-        methods:  {
-            onOptionClick({option, addTag}) {
-                addTag(option)
-                this.search = ''
-            },
-            update() {
-                this.options = Guild.shared.getPlayersNamesList().map(StringUtils.title);
-            }
+export default {
+    name: "PlayersSelectionView",
+    data() {
+        return {
+            search: '',
+            value: []
         }
+    },
+    watch: {
+        value() {
+            this.$emit("selected", this.value);
+        }
+    },
+    mounted() {
+
+    },
+    computed: {
+        criteria() {
+            return this.search.trim().toLowerCase()
+        },
+        availableOptions() {
+            const criteria = this.criteria
+            const options = this.options.filter(opt => this.value.indexOf(opt) === -1).sort((a, b) => a.localeCompare(b))
+            if (criteria) {
+                return options.filter(opt => opt.toLowerCase().indexOf(criteria) > -1);
+            }
+            return options
+        },
+        searchDesc() {
+            if (this.criteria && this.availableOptions.length === 0) {
+                return 'Участники гильдии не найдены по критериям запроса'
+            }
+            return ''
+        },
+        options() {
+            return this.$store.getters["players/players"].map(value => StringUtils.title(value.getName()))
+        }
+    },
+    methods: {
+        onOptionClick({option, addTag}) {
+            addTag(option)
+            this.search = ''
+        },
     }
+}
 </script>
 
 <style scoped>

@@ -8,17 +8,17 @@
                     <h2 style="text-align: center">
                         <player-name :player="player" :linked="false"></player-name>
                     </h2>
-                    ({{player.rank.title}})
+                    ({{selectedPlayer.getGuildRank().getTitle()}})
                 </b-card-body>
                 <b-list-group flush>
-                    <b-list-group-item>ГИР: {{player.gear}}</b-list-group-item>
-                    <b-list-group-item>Расса: {{player.race.title}}</b-list-group-item>
-                    <b-list-group-item>Класс: {{player.class.title}}</b-list-group-item>
-                    <b-list-group-item>Guild Score: {{player.guildScore.all}}</b-list-group-item>
+                    <b-list-group-item>ГИР: {{selectedPlayer.getGear()}}</b-list-group-item>
+                    <b-list-group-item>Расса: {{selectedPlayer.getRace().getTitle()}}</b-list-group-item>
+                    <b-list-group-item>Класс: {{selectedPlayer.getClass().getTitle()}}</b-list-group-item>
+                    <b-list-group-item>Активность: {{selectedPlayer.getActivityPoints()}}</b-list-group-item>
                 </b-list-group>
                 <template v-slot:footer>
                     <router-link :to="'/player/'+player.name">
-                    <b-button variant="primary" block>Перейти в профиль</b-button>
+                    <b-button disabled variant="primary" block>Перейти в профиль</b-button>
                     </router-link>
                     <b-button class="mt-2" @click="hide()" variant="secondary" block>Закрыть</b-button>
                 </template>
@@ -28,32 +28,33 @@
 </template>
 
 <script>
-    import Player from "../../app/entities/Player";
     import PlayerName from "./PlayerName";
     import UIPlayerOverlay from "../../app/UIPlayerOverlay";
-    import API from "@/app/API";
 
     export default {
         name: "PlayerModal",
         components: {PlayerName},
         data() {
             return {
-                player: new Player({}),
-                image: null,
+                player: null,
                 hidden: true,
             }
         },
         mounted() {
             UIPlayerOverlay.component = this;
         },
+        computed:{
+            selectedPlayer(){
+                return this.$store.getters["players/players"].find(value => value.raw.wow_id === this.player.raw.wow_id);
+            },
+            image(){
+                return `http://server.prestij.xyz/static/characters/${this.selectedPlayer.getName().toLowerCase()}_avatar.png`
+            }
+        },
         methods: {
             show(player) {
                 this.player = player;
                 this.hidden = false;
-
-                API.media(player.name).then(value => {
-                    this.image = value.bust_url;
-                });
             },
             hide(){
                 this.hidden = true;

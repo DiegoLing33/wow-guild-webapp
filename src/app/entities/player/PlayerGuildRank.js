@@ -19,7 +19,7 @@ export default class PlayerGuildRank {
         this.id = id;
 
         /**
-         * The guild rank title
+         * The guild rank postTitle
          */
         this.title = title;
     }
@@ -27,14 +27,14 @@ export default class PlayerGuildRank {
 }
 
 export const GUILD_RANKS = {
-    0: new PlayerGuildRank({id: 0, title: "Лидер гильдии"}),
-    1: new PlayerGuildRank({id: 1, title: "Администратор"}),
-    2: new PlayerGuildRank({id: 2, title: "?"}),
-    3: new PlayerGuildRank({id: 3, title: "Офицер"}),
-    4: new PlayerGuildRank({id: 4, title: "?"}),
-    5: new PlayerGuildRank({id: 5, title: "?"}),
-    6: new PlayerGuildRank({id: 6, title: "?"}),
-    7: new PlayerGuildRank({id: 7, title: "?"}),
-    8: new PlayerGuildRank({id: 8, title: "?"}),
-    9: new PlayerGuildRank({id: 9, title: "?"}),
+    0: new PlayerGuildRank({id: 0, postTitle: "Лидер гильдии"}),
+    1: new PlayerGuildRank({id: 1, postTitle: "Администратор"}),
+    2: new PlayerGuildRank({id: 2, postTitle: "?"}),
+    3: new PlayerGuildRank({id: 3, postTitle: "Офицер"}),
+    4: new PlayerGuildRank({id: 4, postTitle: "?"}),
+    5: new PlayerGuildRank({id: 5, postTitle: "?"}),
+    6: new PlayerGuildRank({id: 6, postTitle: "?"}),
+    7: new PlayerGuildRank({id: 7, postTitle: "?"}),
+    8: new PlayerGuildRank({id: 8, postTitle: "?"}),
+    9: new PlayerGuildRank({id: 9, postTitle: "?"}),
 }
