@@ -4,6 +4,7 @@ import {mythicStore} from "@/modules/Mythic/store/mythicStore";
 import {loginStore} from "@/modules/Login/store";
 import {apiStore} from "@/modules/API/store";
 import {postsStore} from "@/modules/Posts/store";
+import {playersStore} from "@/modules/Players/store";
 
 Vue.use(Vuex);
 
@@ -22,6 +23,7 @@ export const store = new Vuex.Store({
         mythic: mythicStore,
         apiStore,
         posts: postsStore,
+        players: playersStore,
     },
     getters: {},
     mutations: {},

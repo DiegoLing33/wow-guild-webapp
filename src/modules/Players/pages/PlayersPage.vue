@@ -77,9 +77,8 @@
 </template>
 
 <script>
-import PlayersButch from "@/app/butches/PlayersButch";
 import Margin from "@/components/utils/Margin";
-import PlayerName from "@/components/player/PlayerName";
+import PlayerName from "@/modules/Player/components/PlayerName";
 import {WFTSpecialization} from "prestij.xyz-api";
 
 function getFilter(filter) {
@@ -106,16 +105,6 @@ export default {
 
             metaText: '...',
             items: [],
-            filter: {
-                specs: [
-                    PlayersButch.Filter.TANKS, PlayersButch.Filter.HEALERS,
-                    PlayersButch.Filter.RANGED, PlayersButch.Filter.MILLIE
-                ],
-                etc: [
-                    PlayersButch.Filter.IN_GUILD, PlayersButch.Filter.MAX_LEVEL_ONLY
-                ],
-                name: "",
-            },
             fields: [
                 {key: "raw.level", label: "Уровень", sortable: true},
                 {key: "raw.name", label: "Имя"},

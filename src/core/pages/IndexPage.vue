@@ -7,7 +7,7 @@
                         <img class="guild_image" :src="guild_logo"/>
                         <div class="guild_text pl-3">
                             Присоединиться к Discord
-                            <div class="small">@{{$store.getters["guild/name"]}}</div>
+                            <div class="small">@{{ $store.getters["guild/name"] }}</div>
                         </div>
                     </div>
                 </a>
@@ -31,25 +31,32 @@
             <b-card-group deck>
                 <b-card class="info-item mb-3">
                     <h2>MVGP</h2>
-                    <div class="my-3 text-muted">Герой недели</div>
+                    <div class="my-3 text-muted">Герой месяца</div>
                     <img :src="medal" alt="MVGP">
                     <h3 class="mvgp-go">
-<!--                        <player-name :player="mvgp" :linked="false"></player-name>-->
-                        ({{ mvgp.guildScore.thisWeek }})
+                        <template v-if="maxActivityPlayer">
+                            <player-name
+                                :player="maxActivityPlayer"
+                                :linked="true"></player-name>
+                            <span>
+                            ({{ $store.getters["players/activity/maxPlayer"].getActivityPoints() }})
+                        </span>
+                        </template>
+
                     </h3>
                 </b-card>
                 <b-card class="info-item mb-3">
                     <h2>Активность</h2>
                     <div class="my-3 text-muted">Активность игроков {{ $store.getters["guild/name"] }}</div>
                     <img :src="rating" alt="Guild score гильдии">
-                    <h3>{{ $store.getters["players/activity/maxActivity"] }}</h3>
+                    <h3>{{ allActivityCount }}</h3>
                 </b-card>
             </b-card-group>
 
             <b-card title="Информация">
-                <div><b>Название:</b> {{$store.getters["guild/name"]}}</div>
-                <div><b>Очки достижений:</b> {{$store.getters["guild/achievementPoints"]}}</div>
-                <div><b>Участников:</b> {{$store.getters["guild/playersCount"]}}</div>
+                <div><b>Название:</b> {{ $store.getters["guild/name"] }}</div>
+                <div><b>Очки достижений:</b> {{ $store.getters["guild/achievementPoints"] }}</div>
+                <div><b>Участников:</b> {{ $store.getters["guild/playersCount"] }}</div>
                 <div><b>Дата создания:</b> {{ created }}</div>
             </b-card>
         </b-container>
@@ -61,25 +68,32 @@ import achievement from "@/assets/achievement.svg";
 import antique from "@/assets/antique.svg";
 import medal from "@/assets/medal.svg";
 import rating from "@/assets/rating.svg";
-import Guild from "@/app/Guild";
-import Player from "../../app/entities/Player";
 import guild_logo from "@/assets/guild-logo.png";
 import Feed from "@/modules/Posts/components/Feed";
+import PlayerName from "@/modules/Player/components/PlayerName";
 
 export default {
     name: "IndexPage",
-    components: {Feed},
+    components: {PlayerName, Feed},
     computed: {
         created() {
             const date = new Date(this.$store.getters["guild/createdTimestamp"] * 1);
             return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}, в ${date.toLocaleTimeString()}`;
         },
-    },
-    mounted() {
-        Guild.shared.wait(() => {
-            this.guild = Guild.shared;
-            this.mvgp = Guild.shared.getPlayer(Guild.shared.getRatingWeek(1)[0].name);
-        });
+        maxActivityPlayer() {
+            const player = this.$store.getters['players/activity/maxPlayer'];
+            if (!player) return null;
+            return this.$store.getters["players/playerWithWID"](player.raw.wow_id);
+        },
+        allActivityCount() {
+            let count = 0;
+            for (const player of this.$store.getters["players/activity/players"]) {
+                if (player && player.getActivityPoints) {
+                    count += player.getActivityPoints();
+                }
+            }
+            return count;
+        },
     },
     data() {
         return {
@@ -88,8 +102,6 @@ export default {
             medal,
             rating,
             guild_logo,
-            guild: {guildScore: {all: 0}},
-            mvgp: new Player({}),
         }
     },
 
@@ -97,9 +109,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.gd{
+.gd {
     text-decoration: none !important;
 }
+
 .info {
     padding: 15px;
     padding-bottom: 0;

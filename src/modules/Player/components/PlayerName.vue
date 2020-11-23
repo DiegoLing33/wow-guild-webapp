@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import UIPlayerOverlay from "../../app/UIPlayerOverlay";
 import {WFTClass} from "prestij.xyz-api";
 
 export default {
@@ -37,15 +36,15 @@ export default {
     computed: {
         color() {
             const hasClass = this.player.getClass;
-            if(hasClass) {
+            if (hasClass) {
                 return WFTClass.getSlugById(this.player.getClass().getWID());
-            }else{
+            } else {
                 const theSpec = this.player.getActiveSpec();
                 const theRoles = WFTClass.getSpecializations();
 
-                for(const cid in theRoles){
+                for (const cid in theRoles) {
                     const cof = theRoles[cid];
-                    if(cof.includes(theSpec.getWID())){
+                    if (cof.includes(theSpec.getWID())) {
                         return WFTClass.getSlugById(cid);
                     }
                 }
@@ -70,8 +69,9 @@ export default {
     },
     methods: {
         click() {
-            if (this.linked && this.player.isFromGuild())
-                UIPlayerOverlay.displayPlayer(this.player);
+            if (this.linked && (this.player.raw.gear || this.player.raw.from_guild)) {
+                this.$store.dispatch("players/setPlayerOverlay", this.player.raw.wow_id);
+            }
         }
     }
 }

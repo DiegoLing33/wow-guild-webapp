@@ -31,7 +31,7 @@
 
 <script>
     import DateUtils from "@/app/utils/DateUtils";
-    import MythicCardPlayers from "@/components/mythic/MythicCardPlayers";
+    import MythicCardPlayers from "@/modules/Mythic/components/MythicCardPlayers";
 
     export default {
         name: "MythicCard",

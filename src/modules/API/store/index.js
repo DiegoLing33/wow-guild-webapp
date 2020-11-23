@@ -1,10 +1,8 @@
 import {guildStore} from "@/modules/API/store/guild";
-import {playersStore} from "@/modules/API/store/players";
 
 export const apiStore = {
     modules: {
         guild: guildStore,
-        players: playersStore,
     },
     state: () => ({
         loaderMax: 1,

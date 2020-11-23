@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import MythicCardsDeck from "@/components/mythic/MythicCardsDeck";
+import MythicCardsDeck from "@/modules/Mythic/components/MythicCardsDeck";
 
 export default {
     name: "MythicPage",

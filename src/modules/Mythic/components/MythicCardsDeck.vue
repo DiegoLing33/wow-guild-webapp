@@ -19,8 +19,8 @@
 </template>
 
 <script>
-    import MythicCard from "@/components/mythic/MythicCard";
-    import MythicSearchPanel from "@/components/mythic/MythicSearchPanel";
+    import MythicCard from "@/modules/Mythic/components/MythicCard";
+    import MythicSearchPanel from "@/modules/Mythic/components/MythicSearchPanel";
     import ArrayUtils from "@/app/utils/ArrayUtils";
     import NumberUtils from "@/app/utils/NumberUtils";
 

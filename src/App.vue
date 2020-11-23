@@ -22,10 +22,9 @@
 
 <script>
 
-import SubMenu from "@/components/navigation/SubMenu";
-import NavigationBar from "@/components/navigation/NavigationBar";
-import PlayerModal from "./components/player/PlayerModal";
-import UIPlayerOverlay from "./app/UIPlayerOverlay";
+import SubMenu from "@/core/components/SubMenu";
+import NavigationBar from "@/core/components/NavigationBar";
+import PlayerModal from "./modules/Players/components/PlayerModal";
 import APILoader from "@/modules/API/compopents/APILoader";
 
 export default {
@@ -37,7 +36,7 @@ export default {
         SubMenu,
     },
     async mounted() {
-        this.$store.dispatch("initAuthorization")
+        this.$store.dispatch("initAuthorization").then()
         this.$store.dispatch("guild/updateGuildInfo").then(() => {
             this.$store.dispatch("players/updatePlayers").then(() => {
                 this.$store.dispatch("mythic/update");
@@ -45,11 +44,6 @@ export default {
             this.$store.dispatch("players/activity/update").then();
         });
     },
-    watch: {
-        $route() {
-            UIPlayerOverlay.hide();
-        },
-    }
 }
 </script>
 

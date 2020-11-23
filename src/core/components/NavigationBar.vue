@@ -36,7 +36,7 @@
                         </li>
                     </b-nav-dropdown>
                     <router-link class="nav-item nav-link" to="/mythic"><img :src="require('@/assets/dungeon.png')"/>Mythic+</router-link>
-                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('./addons.svg')"/>Аддоны</router-link>
+                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('../assets/addons.svg')"/>Аддоны</router-link>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <a v-if="$store.getters.battleTag === ''" class="nav-item nav-link" :href="getAuthURL()">

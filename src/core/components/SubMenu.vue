@@ -9,7 +9,7 @@
             <div>Игроки</div>
         </div>
         <div class="sub-menu-item" @click="$router.push('/posts')">
-            <img :src="require('./news.svg')" alt="News">
+            <img :src="require('../assets/news.svg')" alt="News">
             <div>Новости</div>
         </div>
         <div class="sub-menu-item"  @click="$router.push('/versions')">
