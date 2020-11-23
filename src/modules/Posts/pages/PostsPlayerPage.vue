@@ -43,7 +43,9 @@ export default {
             try {
                 this.user = await GuildAPI.GetUser(this.playerId);
 
-                const temp = await GuildAPI.Posts.GetPostsByBlizzardId(this.playerId);
+                const temp = await GuildAPI.Posts.GetPostsByBlizzardId(this.playerId, {
+                    token: this.$store.getters.authToken,
+                });
                 this.posts = temp.response.items;
             } catch (e) {
                 this.error = 'Пользователь не найден!';

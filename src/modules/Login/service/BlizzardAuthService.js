@@ -46,7 +46,7 @@ export default class BlizzardAuthService {
             .getURLRequest('oauth/authorize', uriData);
     }
 
-    static async createRequest(url, method = 'POST'){
+    static async createRequest(url, method = 'POST') {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
 
@@ -106,9 +106,34 @@ export default class BlizzardAuthService {
             });
             const url = `https://eu.battle.net/oauth/userinfo?${uriData}`;
             fetch(url).then(value => {
-                if(value.status !== 200){
+                if (value.status !== 200) {
                     reject('Bad auth');
-                    return ;
+                    return;
+                }
+                value.json().then(json => resolve(json))
+                    .catch(reason => reject(reason));
+            })
+        });
+
+    }
+
+    /**
+     * Loads the user info
+     * @param token
+     * @return {Promise<any>}
+     */
+    static async getProfileSummary(token) {
+        return new Promise((resolve, reject) => {
+            const uriData = new URLSearchParams({
+                access_token: token,
+                namespace: 'profile-eu',
+                locale: 'ru_RU',
+            });
+            const url = `https://eu.api.blizzard.com/profile/user/wow?${uriData}`;
+            fetch(url).then(value => {
+                if (value.status !== 200) {
+                    reject('Bad auth');
+                    return;
                 }
                 value.json().then(json => resolve(json))
                     .catch(reason => reject(reason));

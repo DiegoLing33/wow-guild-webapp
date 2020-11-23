@@ -46,6 +46,11 @@
                             {{ $store.getters.battleTag }}
                         </template>
                         <li>
+                            <router-link class="dropdown-item" :to="'/profile'">
+                                <img :src="require('@/assets/checklist.svg')"/> Профиль
+                            </router-link>
+                        </li>
+                        <li>
                             <router-link class="dropdown-item" :to="'/posts/p/' + $store.getters.userId">
                                 <img :src="require('@/assets/checklist.svg')"/> Мои записи
                             </router-link>
