@@ -50,11 +50,11 @@
             <div class="my-3">
                 Найдено результатов: <b>{{ guildPlayers.length }}</b>
             </div>
-            <b-table bordered :items="visiblePlayers" :fields="fields">
+            <b-table no-local-sorting @sort-changed="onSortChanged" bordered :items="visiblePlayers" :fields="fields">
                 <template v-slot:cell(raw.name)="row">
                     <player-name :player="row.item"></player-name>
                 </template>
-                <template v-slot:cell(activity)="row" style="vertical-align: center">
+                <template v-slot:cell(raw.activity)="row" style="vertical-align: center">
                     <b-progress
                         :title="`Активность: ${progressPoints(row.item)}`"
                         v-b-tooltip.hover
@@ -91,6 +91,21 @@ function getFilterIntegers(filter) {
     return [f, v.map(i => parseInt(i))];
 }
 
+function byString(o, s) {
+    s = s.replace(/\[(\w+)]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    let a = s.split('.');
+    for (let i = 0; i < a.length; ++i) {
+        let k = a[i];
+        if (k in o) {
+            o = o[k];
+        } else {
+            return;
+        }
+    }
+    return o;
+}
+
 export default {
     name: "PlayersPage",
     components: {PlayerName, Margin},
@@ -102,16 +117,41 @@ export default {
             selectedSpecializations: null,
             selectedOthers: null,
             currentPage: 0,
+            currentSortMethod: null,
 
             metaText: '...',
             items: [],
             fields: [
-                {key: "raw.level", label: "Уровень", sortable: true},
-                {key: "raw.name", label: "Имя"},
-                {key: "raw.gear", label: "Gear"},
-                {key: "raw.role.title", label: "Ранг", sortable: true},
-                {key: "raw.character_class.title", label: "Класс"},
-                {key: "activity", label: "Активность", sortable: true},
+                {
+                    key: "raw.level",
+                    label: "Уровень",
+                    sortable: true
+                },
+                {
+                    key: "raw.name",
+                    label: "Имя",
+                    sortable: true
+                },
+                {
+                    key: "raw.gear",
+                    label: "Gear",
+                    sortable: true
+                },
+                {
+                    key: "raw.role.title",
+                    label: "Ранг",
+                    sortable: true
+                },
+                {
+                    key: "raw.character_class.title",
+                    label: "Класс",
+                    sortable: true
+                },
+                {
+                    key: "raw.activity",
+                    label: "Активность",
+                    sortable: true
+                },
             ]
         }
     },
@@ -173,6 +213,13 @@ export default {
                 // Default true
                 return true;
             });
+            if (this.currentSortMethod) {
+                const [field, desc] = this.currentSortMethod;
+                players = players.sort((a, b) => {
+                    if (desc) return byString(a, field) > byString(b, field) ? 1 : -1;
+                    else return byString(a, field) > byString(b, field) ? -1 : 1;
+                });
+            }
             return players;
         },
 
@@ -230,6 +277,11 @@ export default {
             const p = Math.round(this.$store.getters['players/activity/byWID'](item.raw.wow_id).raw.activity * 100);
             const points = this.$store.getters['players/activity/byWID'](item.raw.wow_id).raw.activity_points;
             return `${points} (${p}%)`;
+        },
+        onSortChanged(e) {
+            console.log(e);
+            this.currentPage = 0;
+            this.currentSortMethod = [e.sortBy, e.sortDesc];
         },
 
     },

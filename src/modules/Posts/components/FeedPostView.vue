@@ -36,9 +36,9 @@
                     <div class="comment_text">{{ comments.length }}</div>
                 </div>
             </div>
-            <div class="author_div button_item">
+            <div class="author_div button_item" @click="() => $router.push('/posts/p/' + user.getBlizzardId())">
                 <img class="img_item" :src="require('../assets/user.svg')" alt=""/>
-                <div class="author_text">{{ user.getBlizzardName().split('#')[0] }}</div>
+                <div class="author_text">{{ user.getBlizzardName() }}</div>
             </div>
         </div>
     </div>

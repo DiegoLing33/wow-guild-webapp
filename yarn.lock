@@ -7918,10 +7918,10 @@ prepend-http@^1.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
 
-prestij.xyz-api@1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/prestij.xyz-api/-/prestij.xyz-api-1.0.17.tgz#075b28c9b3ebc10ca7f5c7e1c9ed7a6b2448d0ad"
-  integrity sha512-wfavfYdn7E6mQWR45rOM0OCczG96fS+yw7BYCctSTqQbwy0lJiNUbHC0ciXGfxoGh6WPl746lNDzL+hlPIB0NQ==
+prestij.xyz-api@1.0.19:
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/prestij.xyz-api/-/prestij.xyz-api-1.0.19.tgz#541b761924ea0f322df1c77fbe641b69b5b32311"
+  integrity sha512-2qiCSSi1gdgn2ovprVB9Irb/hLLJkGVfCF9MN+7BvUtQ9UeEd0Fl0oyVbmqsJVUjoW9pit8Ph5dQuQYJWzzQgg==
   dependencies:
     typescript "^4.0.5"
 

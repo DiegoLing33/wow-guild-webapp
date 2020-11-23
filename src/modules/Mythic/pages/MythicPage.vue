@@ -9,7 +9,8 @@
                 </ol>
             </b-card>
             <template v-if="items.length > 0">
-                <mythic-cards-deck :filters="['done', 'broken', 'guild', 'lfr']" :mythic-list="items"></mythic-cards-deck>
+                <mythic-cards-deck :filters="['done', 'broken', 'guild', 'lfr']"
+                                   :mythic-list="items"></mythic-cards-deck>
             </template>
         </b-container>
     </div>
@@ -26,6 +27,9 @@ export default {
             return this.$store.getters["mythic/mythic"];
         }
     },
+    mounted() {
+        this.$store.dispatch("mythic/update");
+    }
 }
 </script>
 

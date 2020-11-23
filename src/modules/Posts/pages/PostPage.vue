@@ -17,15 +17,21 @@
                             <template #button-content>
                                 <img class="img_item" :src="require('../assets/actions.svg')" alt=""/>
                             </template>
-                            <b-dropdown-item @click="() => $router.push('/post/create?edit=' + post.getId())">Редактировать</b-dropdown-item>
-                            <b-dropdown-item @click="handleDeleteClick" variant="danger" href="#">Удалить</b-dropdown-item>
+                            <b-dropdown-item @click="() => $router.push('/post/create?edit=' + post.getId())">
+                                Редактировать
+                            </b-dropdown-item>
+                            <b-dropdown-item @click="handleDeleteClick" variant="danger" href="#">Удалить
+                            </b-dropdown-item>
                         </b-dropdown>
                     </BCardTitle>
                     <div class="description">
-                        {{ post.getCreatedString() }} - {{ post.getUser().getBlizzardName().split('#')[0] }}
+                        {{ post.getCreatedString() }} -
+                        <router-link :to="'/posts/p/' + post.getUser().getBlizzardId()">
+                            {{ post.getUser().getBlizzardName() }}
+                        </router-link>
                     </div>
                 </BCardHeader>
-                <BCardBody class="content-h" v-html="post.raw.content" />
+                <BCardBody class="content-h" v-html="post.raw.content"/>
             </BCard>
         </div>
     </b-container>
@@ -105,7 +111,6 @@ export default {
 }
 
 
-
 .img_item {
     width: 30px;
     height: 30px;
@@ -116,7 +121,6 @@ export default {
     font-size: 17px;
     color: rgba(161, 161, 161, 1);
 }
-
 
 
 </style>

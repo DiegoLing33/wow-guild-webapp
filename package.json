@@ -22,7 +22,7 @@
     "js-base64": "^3.6.0",
     "md5": "^2.2.1",
     "node-sass": "^5.0.0",
-    "prestij.xyz-api": "1.0.17``",
+    "prestij.xyz-api": "1.0.19",
     "sass-loader": "^10.0.5",
     "tinycolor2": "^1.4.2",
     "vue": "^2.6.11",

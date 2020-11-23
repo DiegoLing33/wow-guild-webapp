@@ -1,31 +1,16 @@
 <template>
-    <div class="feed-container">
-        <div class="feed-inner mb-1" v-for="post in posts" :key="post.getId()">
-            <FeedPostView
-                :post-id="post.raw.id"
-                :image="post.raw.image"
-                :content="post.raw.content"
-                :category="post.getCategory().getTitle()"
-                :title="post.raw.title"
-                :likes="post.getLikes()"
-                :comments="post.getComments()"
-                :user="post.getUser()"
-                :date="post.getCreatedString().split('T')[0]"
-                @shouldReload="update"
-            >
-                {{ post.raw.content }}
-            </FeedPostView>
-        </div>
-    </div>
+    <PostsContainer
+        @shouldReload="update"
+        :posts="posts"/>
 </template>
 
 <script>
-import FeedPostView from "@/modules/Posts/components/FeedPostView";
 import {GuildAPI} from "prestij.xyz-api";
+import PostsContainer from "@/modules/Posts/components/PostsContainer";
 
 export default {
     name: "Feed",
-    components: {FeedPostView},
+    components: {PostsContainer},
     data: () => ({
         postsList: []
     }),
@@ -48,23 +33,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.feed-container {
-    display: flex;
-    margin: 0 -10px;
-    flex-wrap: wrap;
-}
-
-.feed-inner {
-    padding: 10px;
-    width: 50%;
-}
-
-@media (max-width: 1000px) {
-    .feed-inner {
-        width: 100%;
-    }
-}
-
-</style>

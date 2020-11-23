@@ -12,9 +12,9 @@
             <img :src="require('../assets/news.svg')" alt="News">
             <div>Новости</div>
         </div>
-        <div class="sub-menu-item"  @click="$router.push('/versions')">
-            <img :src="log" alt="Версии">
-            <div>Версии</div>
+        <div class="sub-menu-item"  @click="$router.push('/mythic')">
+            <img :src="dungeon" alt="Мифик+">
+            <div>Мифик+</div>
         </div>
     </div>
 </template>

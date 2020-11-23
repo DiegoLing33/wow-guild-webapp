@@ -36,12 +36,11 @@ export default {
         SubMenu,
     },
     async mounted() {
-        this.$store.dispatch("initAuthorization").then()
-        this.$store.dispatch("guild/updateGuildInfo").then(() => {
-            this.$store.dispatch("players/updatePlayers").then(() => {
-                this.$store.dispatch("mythic/update");
+        this.$store.dispatch("initAuthorization").then(() => {
+            this.$store.dispatch("guild/updateGuildInfo").then(() => {
+                this.$store.dispatch("players/updatePlayers").then();
+                this.$store.dispatch("players/activity/update").then();
             });
-            this.$store.dispatch("players/activity/update").then();
         });
     },
 }
