@@ -30,7 +30,12 @@ export default {
         user: null,
         error: '',
     }),
-    async mounted() {
+    watch: {
+        $route() {
+            this.update();
+        },
+    },
+    mounted() {
         this.update();
     },
     methods: {

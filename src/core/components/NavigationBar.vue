@@ -19,7 +19,8 @@
 
             <b-collapse id="nav" is-nav>
                 <b-navbar-nav>
-                    <router-link class="nav-item nav-link" to="/"><img :src="require('@/assets/book.svg')"/>Главная</router-link>
+                    <router-link class="nav-item nav-link" to="/"><img :src="require('@/assets/book.svg')"/>Главная
+                    </router-link>
                     <b-nav-dropdown>
                         <template v-slot:button-content>
                             <img :src="require('@/assets/miscellaneous.svg')"/>Игроки
@@ -30,8 +31,10 @@
                             </router-link>
                         </li>
                     </b-nav-dropdown>
-                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('../assets/addons.svg')"/>Аддоны</router-link>
-                    <router-link class="nav-item nav-link" to="/versions"><img :src="require('@/assets/log.svg')"/>Версии</router-link>
+                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('../assets/addons.svg')"/>Аддоны
+                    </router-link>
+                    <router-link class="nav-item nav-link" to="/versions"><img :src="require('@/assets/log.svg')"/>Версии
+                    </router-link>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <a v-if="$store.getters.battleTag === ''" class="nav-item nav-link" :href="getAuthURL()">
@@ -39,8 +42,14 @@
                     </a>
                     <b-nav-dropdown v-else>
                         <template v-slot:button-content>
-                            <img :src="require('@/modules/Login/resources/bnet-large.png')"/> {{ $store.getters.battleTag }}
+                            <img :src="require('@/modules/Login/resources/bnet-large.png')"/>
+                            {{ $store.getters.battleTag }}
                         </template>
+                        <li>
+                            <router-link class="dropdown-item" :to="'/posts/p/' + $store.getters.userId">
+                                <img :src="require('@/assets/checklist.svg')"/> Мои записи
+                            </router-link>
+                        </li>
                         <li>
                             <router-link class="dropdown-item" to="/post/create">
                                 <img :src="require('@/assets/checklist.svg')"/> Создать запись
@@ -63,11 +72,11 @@ export default {
             const rgba = this.$store.getters["guild/crestBackgroundColor"];
             return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 0.72)`;
         },
-        navBorderColor(){
+        navBorderColor() {
             const rgba = this.$store.getters["guild/crestBackgroundColor"];
             return increase_brightness(rgba[0], rgba[1], rgba[2], 40);
         },
-        navColor(){
+        navColor() {
             const rgba = this.$store.getters["guild/crestBackgroundColor"];
             return increase_brightness(rgba[0], rgba[1], rgba[2], 72);
         }
