@@ -5,6 +5,7 @@ import {loginStore} from "@/modules/Login/store";
 import {apiStore} from "@/modules/API/store";
 import {postsStore} from "@/modules/Posts/store";
 import {playersStore} from "@/modules/Players/store";
+import {staticsStore} from "@/modules/Statics/store";
 
 Vue.use(Vuex);
 
@@ -24,6 +25,7 @@ export const store = new Vuex.Store({
         apiStore,
         posts: postsStore,
         players: playersStore,
+        statics: staticsStore,
     },
     getters: {},
     mutations: {},

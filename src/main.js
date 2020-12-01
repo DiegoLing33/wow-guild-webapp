@@ -19,6 +19,7 @@ import {authRoutes} from "@/modules/Login/routes";
 import {feedRoutes} from "@/modules/Posts/routes";
 import CKEditor from 'ckeditor4-vue';
 import VueToast from "vue-toast-notification";
+import {staticsRouter} from "@/modules/Statics/routes";
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
@@ -41,6 +42,7 @@ const router = new VueRouter({
         ...coreRoutes,
         ...playersRoutes,
         ...mythicRoutes,
+        ...staticsRouter,
     ]
 })
 

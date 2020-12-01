@@ -31,7 +31,11 @@
                             </router-link>
                         </li>
                     </b-nav-dropdown>
-                    <router-link class="nav-item nav-link" to="/addons"><img :src="require('../assets/addons.svg')"/>Аддоны
+                    <router-link class="nav-item nav-link" to="/addons">
+                        <img :src="require('../assets/addons.svg')"/> Аддоны
+                    </router-link>
+                    <router-link class="nav-item nav-link" to="/statics">
+                        <img :src="require('../navigation/assets/weapons.svg')"/> Статики
                     </router-link>
                     <router-link class="nav-item nav-link" to="/versions"><img :src="require('@/assets/log.svg')"/>Версии
                     </router-link>

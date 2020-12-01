@@ -1,7 +1,7 @@
 <template>
     <div :class="([color, 'player-name'].join(' '))">
             <span @click="click()" class="player-click">
-                <img :src="image" alt="Role">
+                <img v-if="role" :src="image" alt="Role">
                 <span :class="(player.raw.from_guild <= 0 ? 'no-guild' : '')">{{ player.raw.name }}</span>
             </span> <span v-if="gear && player.raw.gear > 0">({{ player.raw.gear }})</span>
     </div>
@@ -14,8 +14,7 @@ export default {
     name: "PlayerName",
     props: {
         player: {
-            type: Object,
-            required: true,
+            required: true
         },
         tooltip: {
             type: Boolean,
@@ -23,6 +22,11 @@ export default {
             default: true,
         },
         linked: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+        role: {
             type: Boolean,
             required: false,
             default: true,
@@ -35,7 +39,7 @@ export default {
     },
     computed: {
         color() {
-            const hasClass = this.player.getClass;
+            const hasClass = this.player && typeof this.player.getClass === 'function';
             if (hasClass) {
                 return WFTClass.getSlugById(this.player.getClass().getWID());
             } else {

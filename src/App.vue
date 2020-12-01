@@ -51,7 +51,7 @@ export default {
     --class-war: rgb(199, 156, 110);
     --class-paladin: rgb(245, 140, 186);
     --class-hunter: rgb(169, 210, 113);
-    --class-rogue: rgb(245, 140, 186);
+    --class-rogue: rgb(255, 244, 104);
     --class-priest: rgb(255, 255, 255);
     --class-dk: rgb(196, 31, 59);
     --class-shaman: rgb(0, 112, 222);
